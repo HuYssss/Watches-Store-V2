@@ -2,16 +2,17 @@ package hcmute.edu.vn.watches_store_v2.controller;
 
 import com.mongodb.MongoException;
 import hcmute.edu.vn.watches_store_v2.base.ControllerBase;
+import hcmute.edu.vn.watches_store_v2.dto.product.request.IdProductRequest;
+import hcmute.edu.vn.watches_store_v2.dto.product.response.ProductResponse;
+import hcmute.edu.vn.watches_store_v2.entity.Product;
 import hcmute.edu.vn.watches_store_v2.service.component.CategoryService;
 import hcmute.edu.vn.watches_store_v2.service.component.CouponService;
 import hcmute.edu.vn.watches_store_v2.service.component.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
@@ -68,6 +69,22 @@ public class ClientController extends ControllerBase {
     public ResponseEntity<?> getAllCoupon(Principal principal) {
         try {
             return response(this.couponService.getAllCoupons(), HttpStatus.OK);
+        } catch (MongoException e) {
+            return response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/product")
+    public ResponseEntity<?> getProductById(
+            @RequestParam ObjectId productId) {
+        try {
+            ProductResponse product = this.productService.getProductById(productId);
+
+            if (product == null) {
+                return response(null, HttpStatus.NOT_FOUND);
+            }
+
+            return response(product, HttpStatus.OK);
         } catch (MongoException e) {
             return response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
