@@ -5,6 +5,7 @@ import com.mongodb.MongoException;
 import hcmute.edu.vn.watches_store_v2.dto.category.response.CategoryResponse;
 import hcmute.edu.vn.watches_store_v2.dto.product.response.ProductResponse;
 import hcmute.edu.vn.watches_store_v2.entity.Category;
+import hcmute.edu.vn.watches_store_v2.entity.Product;
 import hcmute.edu.vn.watches_store_v2.mapper.CategoryMapper;
 import hcmute.edu.vn.watches_store_v2.repository.CategoryRepository;
 import hcmute.edu.vn.watches_store_v2.service.component.CategoryService;

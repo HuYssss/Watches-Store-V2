@@ -192,4 +192,19 @@ public class ProductServiceImpl implements ProductService {
         pageResponse.setTotalPages(totalPages);
         return pageResponse;
     }
+
+    @Override
+    public List<ProductResponse> getProductsByCategory(ObjectId idCategory) {
+        try {
+            List<Product> products = this.productRepository.findByCategory(idCategory);
+
+            if (products == null)
+                return null;
+
+            return products.stream().map(ProductMapper::mapProductResp).collect(Collectors.toList());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new MongoException("Can't get products by id: " + idCategory);
+        }
+    }
 }

@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequestMapping("client")
@@ -85,6 +86,22 @@ public class ClientController extends ControllerBase {
             }
 
             return response(product, HttpStatus.OK);
+        } catch (MongoException e) {
+            return response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/category")
+    public  ResponseEntity<?> getCategoryById(
+            @RequestParam ObjectId idCategory
+    ) {
+        try {
+            List<ProductResponse> products = this.productService.getProductsByCategory(idCategory);
+            if (products == null) {
+                return response(null, HttpStatus.NOT_FOUND);
+            }
+
+            return response(products, HttpStatus.OK);
         } catch (MongoException e) {
             return response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }

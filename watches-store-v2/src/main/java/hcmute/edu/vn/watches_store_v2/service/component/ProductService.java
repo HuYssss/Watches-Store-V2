@@ -17,4 +17,6 @@ public interface ProductService {
             , String shape, String waterProof, String sortBy, String color
             , String q
             , double minPrice, double maxPrice, int pageNum);
+
+    List<ProductResponse> getProductsByCategory(ObjectId idCategory);
 }
