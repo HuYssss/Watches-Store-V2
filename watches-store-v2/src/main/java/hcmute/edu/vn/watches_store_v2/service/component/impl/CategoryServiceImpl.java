@@ -25,6 +25,16 @@ public class CategoryServiceImpl implements CategoryService {
     private final ProductService productService;
 
     @Override
+    public Category findCategoryById(ObjectId id) {
+        try {
+            return this.categoryRepository.findById(id).orElse(null);
+        } catch (MongoException e) {
+            e.printStackTrace();
+            throw new MongoException("Can't find category by id: " + id.toHexString());
+        }
+    }
+
+    @Override
     public List<CategoryResponse> getAllCategories() {
         try {
             List<Category> categories = this.categoryRepository.findAll();

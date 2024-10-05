@@ -55,7 +55,7 @@ public class ProductMapper {
                 productRequest.getDescription(),
                 productRequest.getColor(),
                 0,
-                (productRequest.getCategory().length() != 12)
+                (productRequest.getCategory() == null)
                         ? new ObjectId("66c710a6d6714b1d226daf5a")
                         : new ObjectId(productRequest.getCategory()),
                 productRequest.getAmount(),

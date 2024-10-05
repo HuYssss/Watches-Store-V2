@@ -9,11 +9,9 @@ import hcmute.edu.vn.watches_store_v2.dto.user.response.ProfileOrder;
 import hcmute.edu.vn.watches_store_v2.entity.Coupon;
 import hcmute.edu.vn.watches_store_v2.entity.Order;
 import hcmute.edu.vn.watches_store_v2.entity.ProductItem;
-import hcmute.edu.vn.watches_store_v2.entity.User;
-import hcmute.edu.vn.watches_store_v2.helper.payment.PaymentService;
+import hcmute.edu.vn.watches_store_v2.helper.payment_vnpay.PaymentService;
 import hcmute.edu.vn.watches_store_v2.mapper.OrderMapper;
 import hcmute.edu.vn.watches_store_v2.mapper.ProductItemMapper;
-import hcmute.edu.vn.watches_store_v2.mapper.UserMapper;
 import hcmute.edu.vn.watches_store_v2.repository.OrderRepository;
 import hcmute.edu.vn.watches_store_v2.service.business.OrderService;
 import hcmute.edu.vn.watches_store_v2.service.component.CouponService;
@@ -79,12 +77,6 @@ public class OrderServiceImpl implements OrderService {
                     .map(i -> ProductItemMapper.mapProductItemFromResp(i))
                     .collect(Collectors.toList());
 
-            if (orderReq.getPaymentMethod().equals("vnpay"))
-            {
-                order.setPaid(true);
-                order.setPaidAt(new Date());
-            }
-
             this.productItemService.updateOrderItem(items);
 
             this.orderRepository.save(order);
@@ -132,7 +124,8 @@ public class OrderServiceImpl implements OrderService {
 
     private double calculateTotalPrice(Coupon coupon, Order order) {
         double price = 0;
-        if (coupon.getCreatedDate().before(new Date())
+        if (coupon != null
+                && coupon.getCreatedDate().before(new Date())
                 && coupon.getExpiryDate().after(new Date())
                 && coupon.getState().equals("active")
                 && coupon.getTimes() > 0) {

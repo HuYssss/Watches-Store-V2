@@ -49,6 +49,9 @@ public class CouponServiceImpl implements CouponService {
     @Override
     public Coupon findCouponByCouponCode(String couponCode) {
         try {
+            if (couponCode == null)
+                return null;
+
             return this.couponRepository.findByCouponCode(couponCode).orElse(null);
         } catch (MongoException e) {
             e.printStackTrace();

@@ -46,7 +46,7 @@ public class OrderMapper {
                 null,
                 new Date(),
                 null,
-                CouponMapper.mapCouponResponse(coupon),
+                (coupon != null) ? CouponMapper.mapCouponResponse(coupon) : null,
                 "processing",
                 null
         );

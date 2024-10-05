@@ -8,6 +8,7 @@ import org.bson.types.ObjectId;
 import java.util.List;
 
 public interface CategoryService {
+    Category findCategoryById(ObjectId id);
     List<CategoryResponse> getAllCategories();
     Category saveCategory(Category category);
     Category deleteCategory(ObjectId categoryId);

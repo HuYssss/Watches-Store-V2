@@ -1,6 +1,7 @@
 package hcmute.edu.vn.watches_store_v2.service.component.impl;
 
 import com.mongodb.MongoException;
+import hcmute.edu.vn.watches_store_v2.dto.category.request.AssignCategoryRequest;
 import hcmute.edu.vn.watches_store_v2.dto.product.response.PageResponse;
 import hcmute.edu.vn.watches_store_v2.dto.product.response.ProductResponse;
 import hcmute.edu.vn.watches_store_v2.entity.Category;
@@ -90,18 +91,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product assignCategory(ObjectId productId, ObjectId categoryId) {
-        Category currentCategory = this.categoryRepository.findById(categoryId).orElse(null);
-        Product product = this.productRepository.findById(productId).orElse(null);
+    public Product assignCategory(AssignCategoryRequest request) {
+        Category currentCategory = this.categoryRepository.findById(request.getCategoryId()).orElse(null);
+        Product product = this.productRepository.findById(request.getProductId()).orElse(null);
 
         if (product == null) {
             return null;
         }
 
-        if (categoryId == null || currentCategory == null)
-            categoryId = new ObjectId("66c710a6d6714b1d226daf5a");
+        if (request.getCategoryId() == null || currentCategory == null)
+            request.setCategoryId(new ObjectId("66c710a6d6714b1d226daf5a"));
 
-        product.setCategory(categoryId);
+        product.setCategory(request.getCategoryId());
 
         try {
             saveProduct(product);
@@ -175,8 +176,7 @@ public class ProductServiceImpl implements ProductService {
         PageResponse pageResponse = new PageResponse();
         pageResponse.setTotalProducts(totalItems);
 
-        if (startIndex > allProducts.size())
-        {
+        if (startIndex > allProducts.size()) {
             return null;
         }
 
@@ -206,5 +206,35 @@ public class ProductServiceImpl implements ProductService {
             e.printStackTrace();
             throw new MongoException("Can't get products by id: " + idCategory);
         }
+    }
+
+    @Override
+    public List<ProductResponse> updateDiscountAllProduct(ObjectId idCategory, double discount) {
+        List<Product> products = this.productRepository.findByCategory(idCategory);
+
+        if (products == null) {
+            return null;
+        }
+
+        this.productRepository.saveAll(products);
+
+        return products
+                .stream()
+                .peek(product -> product.setDiscount(discount * product.getPrice()))
+                .map(ProductMapper::mapProductResp)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public ProductResponse updateDiscount(ObjectId idProduct, double discount) {
+        Product product = this.productRepository.findById(idProduct).orElse(null);
+        if (product == null) {
+            return null;
+        }
+
+        product.setDiscount(discount * product.getPrice());
+        this.productRepository.save(product);
+
+        return ProductMapper.mapProductResp(product);
     }
 }

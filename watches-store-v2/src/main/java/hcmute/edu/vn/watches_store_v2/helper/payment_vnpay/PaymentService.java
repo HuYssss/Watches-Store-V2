@@ -1,4 +1,4 @@
-package hcmute.edu.vn.watches_store_v2.helper.payment;
+package hcmute.edu.vn.watches_store_v2.helper.payment_vnpay;
 
 import hcmute.edu.vn.watches_store_v2.entity.Order;
 

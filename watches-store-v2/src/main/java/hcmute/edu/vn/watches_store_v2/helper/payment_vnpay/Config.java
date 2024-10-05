@@ -1,4 +1,4 @@
-package hcmute.edu.vn.watches_store_v2.helper.payment;
+package hcmute.edu.vn.watches_store_v2.helper.payment_vnpay;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -13,7 +13,7 @@ import java.util.*;
 public class Config {
 
     public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-    public static String vnp_ReturnUrl = "/payment";
+    public static String vnp_ReturnUrl = "http://localhost:8080/payment-success";
     public static String vnp_TmnCode = "V9TZGVS9";
     public static String secretKey = "NAWBHJNBBLZXSDESGVSNOKXXMQSFULRU";
     public static String vnp_ApiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
