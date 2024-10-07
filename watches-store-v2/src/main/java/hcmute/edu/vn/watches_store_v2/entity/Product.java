@@ -27,10 +27,6 @@ public class Product {
 
     private String origin;
 
-    private String thickness;
-
-    private String size;
-
     private String wireMaterial;
 
     private String shellMaterial;
@@ -43,7 +39,13 @@ public class Product {
 
     private String condition;
 
-    private String weight;
+    private double weight;
+
+    private double length;
+
+    private double width;
+
+    private double height;
 
     private String genderUser;
 
