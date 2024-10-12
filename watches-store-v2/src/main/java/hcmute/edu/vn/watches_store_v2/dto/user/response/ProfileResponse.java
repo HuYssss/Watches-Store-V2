@@ -1,5 +1,6 @@
 package hcmute.edu.vn.watches_store_v2.dto.user.response;
 
+import hcmute.edu.vn.watches_store_v2.dto.user.Address;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,7 +21,7 @@ public class ProfileResponse {
 
     private String avatarImg;
 
-    private String address;
+    private Address address;
 
     private String state;
 

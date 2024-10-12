@@ -60,10 +60,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product saveProduct(Product product) {
-        if (product.getId() != null) {
-            ObjectId id = new ObjectId();
-            product.setId(id);
-        }
 
         try {
             this.productRepository.save(product);

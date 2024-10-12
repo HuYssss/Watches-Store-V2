@@ -130,7 +130,7 @@ public class OrderServiceImpl implements OrderService {
                 && coupon.getState().equals("active")
                 && coupon.getTimes() > 0) {
 
-            if (!coupon.getProvince().equals("none") && order.getUser().getAddress().contains(coupon.getProvince())) {
+            if (!coupon.getProvince().equals("none") && order.getUser().getAddress().getProvince().getLabel().contains(coupon.getProvince())) {
                 coupon.setTimes(coupon.getTimes() - 1);
                 price = order.getTotalPrice();
             }

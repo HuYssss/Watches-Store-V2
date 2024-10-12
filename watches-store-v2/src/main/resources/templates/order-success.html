@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Success</title>
+</head>
+<body>
+<h1>Order Success</h1>
+<p>Order ID: <span th:text="${order}"></span></p>
+<!--<p>Customer Email: <span th:text="${order.user.email}"></span></p>-->
+<!--<p>Payment Method: <span th:text="${order.paymentMethod}"></span></p>-->
+<!--<p>Items Price: <span th:text="${order.itemsPrice}"></span></p>-->
+<!--<p>Shipping Price: <span th:text="${order.shippingPrice}"></span></p>-->
+<!--<p>Total Price: <span th:text="${order.totalPrice}"></span></p>-->
+
+<!--<h2>Product List</h2>-->
+<!--<ul>-->
+<!--    <li th:each="product : ${order.products}">-->
+<!--        <p>Product Name: <span th:text="${product.productName}"></span></p>-->
+<!--        <p>Quantity: <span th:text="${product.quantity}"></span></p>-->
+<!--        <p>Price: <span th:text="${product.price}"></span></p>-->
+<!--    </li>-->
+<!--</ul>-->
+
+<!--<p>Order State: <span th:text="${order.state}"></span></p>-->
+
+<!--<p>Paid: <span th:text="${order.isPaid ? 'Yes' : 'No'}"></span></p>-->
+<!--<p th:if="${order.isPaid}">Paid At: <span th:text="${#dates.format(order.paidAt, 'dd/MM/yyyy')}"></span></p>-->
+
+<!--<p>Delivered: <span th:text="${order.isDelivered ? 'Yes' : 'No'}"></span></p>-->
+<!--<p th:if="${order.isDelivered}">Delivered At: <span th:text="${#dates.format(order.deliveredAt, 'dd/MM/yyyy')}"></span></p>-->
+
+<!--<p>Order Created At: <span th:text="${#dates.format(order.createdAt, 'dd/MM/yyyy')}"></span></p>-->
+
+<!--<p>User ID: <span th:text="${order.userId}"></span></p>-->
+
+<!--&lt;!&ndash; Nếu có mã giảm giá &ndash;&gt;-->
+<!--<p th:if="${order.coupon != null}">Coupon Code: <span th:text="${order.coupon.code}"></span></p>-->
+<!--<p th:if="${order.coupon != null}">Coupon Discount: <span th:text="${order.coupon.discount}"></span></p>-->
+
+<!--&lt;!&ndash; Lý do huỷ đơn nếu có &ndash;&gt;-->
+<!--<p th:if="${order.state == 'Cancelled'}">Cancel Reason: <span th:text="${order.cancelMessage}"></span></p>-->
+</body>
+</html>

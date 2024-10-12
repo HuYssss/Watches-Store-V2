@@ -1,5 +1,6 @@
 package hcmute.edu.vn.watches_store_v2.entity;
 
+import hcmute.edu.vn.watches_store_v2.dto.user.Address;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,7 +32,7 @@ public class User {
 
     private String avatarImg;
 
-    private String address;
+    private Address address;
 
     private String roles;
 

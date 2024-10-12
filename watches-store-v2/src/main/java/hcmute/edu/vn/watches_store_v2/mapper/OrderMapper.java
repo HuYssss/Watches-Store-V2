@@ -26,6 +26,8 @@ public class OrderMapper {
                 order.isDelivered(),
                 order.getDeliveredAt(),
                 order.getCreatedAt(),
+                order.getUserId().toHexString(),
+                order.getCoupon(),
                 order.getState(),
                 order.getCancelMessage()
         );

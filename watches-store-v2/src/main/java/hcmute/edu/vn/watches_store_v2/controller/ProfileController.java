@@ -4,6 +4,7 @@ import com.mongodb.MongoException;
 import hcmute.edu.vn.watches_store_v2.base.ControllerBase;
 import hcmute.edu.vn.watches_store_v2.dto.auth.request.RequestAuthPassword;
 import hcmute.edu.vn.watches_store_v2.dto.auth.response.ResponseCode;
+import hcmute.edu.vn.watches_store_v2.dto.user.Address;
 import hcmute.edu.vn.watches_store_v2.dto.user.request.ProfileRequest;
 import hcmute.edu.vn.watches_store_v2.entity.User;
 import hcmute.edu.vn.watches_store_v2.service.auth.AuthService;
@@ -55,6 +56,19 @@ public class ProfileController extends ControllerBase {
             return response(new ResponseCode(user.getToken()), HttpStatus.OK);
         else
             return response(null, HttpStatus.NOT_FOUND);
+    }
+
+    @PostMapping("/update-address")
+    public ResponseEntity<?> updateAddress(@RequestBody Address address, Principal principal) {
+        if (ObjectUtils.isEmpty(address))
+            return response(null, HttpStatus.NO_CONTENT);
+
+        User user = this.profileService.updateAddress(address, findIdByUsername(principal.getName()));
+
+        if (user == null)
+            return response(null, HttpStatus.NOT_FOUND);
+        else
+            return response(user, HttpStatus.OK);
     }
 
 //    @PostMapping("/update-password")

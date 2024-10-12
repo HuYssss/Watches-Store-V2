@@ -1,6 +1,7 @@
 package hcmute.edu.vn.watches_store_v2.dto.auth.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import hcmute.edu.vn.watches_store_v2.dto.user.Address;
 import hcmute.edu.vn.watches_store_v2.helper.TokenType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,7 +32,7 @@ public class AuthResponseDto {
 
     private String avatarImg;
 
-    private String address;
+    private Address address;
 
     private String state;
 

@@ -1,5 +1,7 @@
 package hcmute.edu.vn.watches_store_v2.service.component.impl;
 
+import hcmute.edu.vn.watches_store_v2.entity.Order;
+import hcmute.edu.vn.watches_store_v2.mapper.OrderMapper;
 import hcmute.edu.vn.watches_store_v2.service.component.MailService;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,6 +132,27 @@ public class MailServiceImpl implements MailService {
         context.setVariable("username", username);
 
         String body = templateEngine.process("verified-email", context);
+
+        String[] cc = new String[1];
+        cc[0] = email;
+
+        try {
+            return sendMail(email, cc, subject, body);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Send mail failure !!!";
+        }
+    }
+
+    @Override
+    public String orderSuccess(Order order) {
+        String email = order.getUser().getEmail();
+        String subject = "Thông báo đặt hàng thành công";
+
+        Context context = new Context();
+        context.setVariable("order", OrderMapper.mapOrderResp(order));
+
+        String body = templateEngine.process("order-success", context);
 
         String[] cc = new String[1];
         cc[0] = email;

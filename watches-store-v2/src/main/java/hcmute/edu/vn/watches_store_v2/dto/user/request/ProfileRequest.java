@@ -8,13 +8,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProfileRequest {
+
     private String phone;
 
     private String fullName;
 
     private String avatarImg;
-
-    private String address;
 
     private String email;
 }
