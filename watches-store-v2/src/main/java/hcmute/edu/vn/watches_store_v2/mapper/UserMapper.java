@@ -7,14 +7,12 @@ import hcmute.edu.vn.watches_store_v2.dto.user.response.ProfileResponse;
 import hcmute.edu.vn.watches_store_v2.entity.User;
 import org.bson.types.ObjectId;
 
-import java.util.List;
-
 public class UserMapper {
     public static User mapUser(RegisterRequest register) {
         return new User(
                 new ObjectId(),
                 register.getEmail(),
-                register.getPhone(),
+                "",
                 register.getUsername(),
                 register.getPassword(),
                 "unknow",
