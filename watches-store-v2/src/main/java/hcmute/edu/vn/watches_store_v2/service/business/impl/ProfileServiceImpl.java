@@ -1,7 +1,6 @@
 package hcmute.edu.vn.watches_store_v2.service.business.impl;
 
 import com.mongodb.MongoException;
-import hcmute.edu.vn.watches_store_v2.dto.auth.response.AuthResponseDto;
 import hcmute.edu.vn.watches_store_v2.dto.user.Address;
 import hcmute.edu.vn.watches_store_v2.dto.user.request.ProfileRequest;
 import hcmute.edu.vn.watches_store_v2.dto.user.response.ProfileResponse;
@@ -44,6 +43,7 @@ public class ProfileServiceImpl implements ProfileService {
             if (profileRequest.getPhone() != null)              user.setPhone(profileRequest.getPhone());
             if (profileRequest.getFullName() != null)          user.setFullName(profileRequest.getFullName());
             if (profileRequest.getAvatarImg() != null)          user.setAvatarImg(profileRequest.getAvatarImg());
+            if (profileRequest.getAddress() != null)          user.setAddress(profileRequest.getAddress());
 
             if (profileRequest.getEmail() != null) {
                 if (!user.getEmail().equals(profileRequest.getEmail())) {

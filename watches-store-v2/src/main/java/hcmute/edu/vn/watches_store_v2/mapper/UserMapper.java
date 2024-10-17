@@ -12,17 +12,17 @@ public class UserMapper {
         return new User(
                 new ObjectId(),
                 register.getEmail(),
-                "",
+                null,
                 register.getUsername(),
                 register.getPassword(),
-                "unknow",
-                "unknow",
+                null,
+                null,
                 null,
                 "ROLE_USER",
                 "active",
                 "Local",
                 false,
-                "",
+                null,
                 null
         );
     }
