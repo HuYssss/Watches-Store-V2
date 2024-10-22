@@ -2,43 +2,124 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order Success</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+        .email-header {
+            background: linear-gradient(to right, #4CAF50, #45a049);
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+        }
+        .email-header h1 {
+            color: white;
+            margin: 0;
+            font-size: 24px;
+        }
+        .email-body {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .highlight {
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        .section-title {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #4CAF50;
+        }
+        .product-list {
+            margin: 20px 0;
+        }
+        .product-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .product-item img {
+            max-width: 120px;
+            height: auto;
+            margin-right: 20px;
+            border-radius: 5px;
+        }
+        .product-details {
+            flex-grow: 1;
+        }
+        .total-price {
+            text-align: right;
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            padding-top: 10px;
+            border-top: 2px solid #ddd;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #888;
+            font-size: 0.8em;
+        }
+    </style>
 </head>
 <body>
-<h1>Order Success</h1>
-<p>Order ID: <span th:text="${order}"></span></p>
-<!--<p>Customer Email: <span th:text="${order.user.email}"></span></p>-->
-<!--<p>Payment Method: <span th:text="${order.paymentMethod}"></span></p>-->
-<!--<p>Items Price: <span th:text="${order.itemsPrice}"></span></p>-->
-<!--<p>Shipping Price: <span th:text="${order.shippingPrice}"></span></p>-->
-<!--<p>Total Price: <span th:text="${order.totalPrice}"></span></p>-->
 
-<!--<h2>Product List</h2>-->
-<!--<ul>-->
-<!--    <li th:each="product : ${order.products}">-->
-<!--        <p>Product Name: <span th:text="${product.productName}"></span></p>-->
-<!--        <p>Quantity: <span th:text="${product.quantity}"></span></p>-->
-<!--        <p>Price: <span th:text="${product.price}"></span></p>-->
-<!--    </li>-->
-<!--</ul>-->
+<div class="email-header">
+    <h1>Thông báo đặt hàng thành công</h1>
+</div>
 
-<!--<p>Order State: <span th:text="${order.state}"></span></p>-->
+<div class="email-body">
+    <!-- Thông tin khách hàng -->
+    <p><i>Xin chào, <span th:text="${order.user.name}"></span></i></p>
+    <p>Cảm ơn bạn đã đặt hàng tại <b>Watches Store Website</b>. Dưới đây là thông tin chi tiết về đơn hàng của bạn:</p>
 
-<!--<p>Paid: <span th:text="${order.isPaid ? 'Yes' : 'No'}"></span></p>-->
-<!--<p th:if="${order.isPaid}">Paid At: <span th:text="${#dates.format(order.paidAt, 'dd/MM/yyyy')}"></span></p>-->
+    <h2 class="section-title">Thông tin đơn hàng</h2>
+    <p><b>Mã đơn hàng: </b> <span class="highlight" th:text="${order.id}"></span></p>
+    <p><b>Tên khách hàng: </b> <span class="highlight" th:text="${order.user.name}"></span></p>
+    <p><b>Số điện thoại: </b> <span class="highlight" th:text="${order.user.phone}"></span></p>
+    <p><b>Địa chỉ: </b> <span class="highlight" th:text="${order.user.address.fullAddress}"></span></p>
 
-<!--<p>Delivered: <span th:text="${order.isDelivered ? 'Yes' : 'No'}"></span></p>-->
-<!--<p th:if="${order.isDelivered}">Delivered At: <span th:text="${#dates.format(order.deliveredAt, 'dd/MM/yyyy')}"></span></p>-->
+    <!-- Danh sách sản phẩm -->
+    <h2 class="section-title">Sản phẩm</h2>
+    <ul class="product-list">
+        <li class="product-item" th:each="product : ${order.products}">
+            <img th:src="${product.product.img.getFirst()}" alt="Product Image"/>
+            <div class="product-details">
+                <p><b>Tên sản phẩm:</b> <span class="highlight" th:text="${product.product.productName}"></span></p>
+                <p><b>Số lượng:</b> <span class="highlight" th:text="${product.quantity}"></span></p>
+                <p><b>Giá tiền:</b> <span class="highlight" th:text="${#numbers.formatDecimal(product.product.price, 1, 'COMMA', 0, 'POINT')}"></span></p>
+            </div>
+        </li>
+    </ul>
 
-<!--<p>Order Created At: <span th:text="${#dates.format(order.createdAt, 'dd/MM/yyyy')}"></span></p>-->
+    <!-- Tổng giá -->
+    <p class="total-price"><b>Tổng giá: </b> <span th:text="${#numbers.formatDecimal(order.totalPrice, 1, 'COMMA', 0, 'POINT')}"></span></p>
 
-<!--<p>User ID: <span th:text="${order.userId}"></span></p>-->
+    <!-- Lời cảm ơn -->
+    <br>
+    <b>Trân trọng,<br>Watches Store Website,<br>Khoa Công Nghệ Thông Tin,<br>Trường Đại Học Sư Phạm Kỹ Thuật Thành Phố Hồ Chí Minh</b>
+</div>
 
-<!--&lt;!&ndash; Nếu có mã giảm giá &ndash;&gt;-->
-<!--<p th:if="${order.coupon != null}">Coupon Code: <span th:text="${order.coupon.code}"></span></p>-->
-<!--<p th:if="${order.coupon != null}">Coupon Discount: <span th:text="${order.coupon.discount}"></span></p>-->
+<div class="footer">
+    <p>Đây là email tự động, vui lòng không trả lời thư này. Xin cảm ơn!</p>
+</div>
 
-<!--&lt;!&ndash; Lý do huỷ đơn nếu có &ndash;&gt;-->
-<!--<p th:if="${order.state == 'Cancelled'}">Cancel Reason: <span th:text="${order.cancelMessage}"></span></p>-->
 </body>
 </html>

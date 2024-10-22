@@ -2,6 +2,7 @@ package hcmute.edu.vn.watches_store_v2.mapper;
 
 import hcmute.edu.vn.watches_store_v2.dto.order.request.OrderRequest;
 import hcmute.edu.vn.watches_store_v2.dto.order.response.OrderResponse;
+import hcmute.edu.vn.watches_store_v2.dto.order.response.OrderSuccessResponse;
 import hcmute.edu.vn.watches_store_v2.dto.productItem.response.ProductItemResponse;
 import hcmute.edu.vn.watches_store_v2.dto.user.response.ProfileOrder;
 import hcmute.edu.vn.watches_store_v2.entity.Coupon;
@@ -51,6 +52,28 @@ public class OrderMapper {
                 (coupon != null) ? CouponMapper.mapCouponResponse(coupon) : null,
                 "processing",
                 null
+        );
+    }
+
+    public static OrderSuccessResponse mapOrderSuccessResp(Order order, String redirectUrl) {
+        return new OrderSuccessResponse(
+                order.getId().toHexString(),
+                order.getProducts(),
+                order.getPaymentMethod(),
+                order.getItemsPrice(),
+                order.getShippingPrice(),
+                order.getTotalPrice(),
+                order.getUser(),
+                order.isPaid(),
+                order.getPaidAt(),
+                order.isDelivered(),
+                order.getDeliveredAt(),
+                order.getCreatedAt(),
+                order.getUserId().toHexString(),
+                order.getCoupon(),
+                order.getState(),
+                order.getCancelMessage(),
+                redirectUrl
         );
     }
 }

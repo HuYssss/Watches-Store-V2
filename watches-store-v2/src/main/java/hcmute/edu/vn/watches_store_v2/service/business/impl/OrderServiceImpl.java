@@ -4,6 +4,7 @@ package hcmute.edu.vn.watches_store_v2.service.business.impl;
 import com.mongodb.MongoException;
 import hcmute.edu.vn.watches_store_v2.dto.order.request.OrderRequest;
 import hcmute.edu.vn.watches_store_v2.dto.order.response.OrderResponse;
+import hcmute.edu.vn.watches_store_v2.dto.order.response.OrderSuccessResponse;
 import hcmute.edu.vn.watches_store_v2.dto.productItem.response.ProductItemResponse;
 import hcmute.edu.vn.watches_store_v2.dto.user.response.ProfileOrder;
 import hcmute.edu.vn.watches_store_v2.entity.Coupon;
@@ -15,6 +16,7 @@ import hcmute.edu.vn.watches_store_v2.mapper.ProductItemMapper;
 import hcmute.edu.vn.watches_store_v2.repository.OrderRepository;
 import hcmute.edu.vn.watches_store_v2.service.business.OrderService;
 import hcmute.edu.vn.watches_store_v2.service.component.CouponService;
+import hcmute.edu.vn.watches_store_v2.service.component.MailService;
 import hcmute.edu.vn.watches_store_v2.service.component.ProductItemService;
 import hcmute.edu.vn.watches_store_v2.service.component.UserService;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +39,7 @@ public class OrderServiceImpl implements OrderService {
     private final ProductItemService productItemService;
     private final UserService userService;
     private final CouponService couponService;
+    private final MailService mailService;
 
     @Override
     public List<OrderResponse> getAllUserOrders(ObjectId userId) {
@@ -53,7 +56,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public String createOrder(OrderRequest orderReq, ObjectId userId) {
+    public OrderSuccessResponse createOrder(OrderRequest orderReq, ObjectId userId) {
 
         try {
             List<ProductItemResponse> itemResp = this.productItemService.findAllByItemId(orderReq.getProductItem());
@@ -81,12 +84,14 @@ public class OrderServiceImpl implements OrderService {
 
             this.orderRepository.save(order);
 
+            this.mailService.orderSuccess(order);
+
             if (orderReq.getPaymentMethod().equals("vnpay"))
             {
-                return PaymentService.createPayment(order);
+                return OrderMapper.mapOrderSuccessResp(order, PaymentService.createPayment(order));
             }
 
-            return "Created Order";
+            return OrderMapper.mapOrderSuccessResp(order, "http://localhost:5173");
 
         } catch (MongoException e) {
             e.printStackTrace();
@@ -107,6 +112,20 @@ public class OrderServiceImpl implements OrderService {
             presentOrder.get().setCancelMessage(message);
 
             return this.orderRepository.save(presentOrder.get());
+        }
+
+        return null;
+    }
+
+    @Override
+    public Order isPaid(ObjectId orderId) {
+        Order order = this.orderRepository.findById(orderId).orElse(null);
+
+        if (order != null) {
+            order.setPaid(true);
+            order.setPaidAt(new Date());
+
+            this.orderRepository.save(order);
         }
 
         return null;
@@ -136,7 +155,7 @@ public class OrderServiceImpl implements OrderService {
             }
             else if (coupon.getMinPrice() != 0 && coupon.getMinPrice() <= order.getItemsPrice()) {
                 coupon.setTimes(coupon.getTimes() - 1);
-                price = order.getItemsPrice() * (1 - coupon.getDiscount()) + order.getShippingPrice();
+                price = order.getItemsPrice() * (100 - coupon.getDiscount()) / 100 + order.getShippingPrice();
             }
 
             this.couponService.saveCoupon(coupon);
