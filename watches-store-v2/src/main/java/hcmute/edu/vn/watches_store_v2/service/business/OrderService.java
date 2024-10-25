@@ -17,4 +17,5 @@ public interface OrderService {
 
     Order isPaid(ObjectId order);
     OrderSuccessResponse buyNow(BuyNowRequest buyNowRequest, ObjectId userId) throws UnsupportedEncodingException;
+    OrderResponse isOrderDelivered(ObjectId orderId, ObjectId userId);
 }

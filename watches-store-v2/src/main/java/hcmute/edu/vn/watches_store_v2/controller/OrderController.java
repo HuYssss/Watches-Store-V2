@@ -3,10 +3,11 @@ package hcmute.edu.vn.watches_store_v2.controller;
 import com.mongodb.MongoException;
 import hcmute.edu.vn.watches_store_v2.base.ControllerBase;
 import hcmute.edu.vn.watches_store_v2.dto.order.request.BuyNowRequest;
+import hcmute.edu.vn.watches_store_v2.dto.order.request.CancelOrder;
+import hcmute.edu.vn.watches_store_v2.dto.order.request.IdOrder;
 import hcmute.edu.vn.watches_store_v2.dto.order.request.OrderRequest;
 import hcmute.edu.vn.watches_store_v2.service.business.OrderService;
 import lombok.RequiredArgsConstructor;
-import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -45,14 +46,13 @@ public class OrderController extends ControllerBase {
         }
     }
 
-    @PutMapping("/cancel/{id}")
+    @PutMapping("/cancel")
     public ResponseEntity<?> cancelOrder(
-            @PathVariable("id") ObjectId id,
-            @RequestParam(defaultValue = "Nhầm địa chỉ") String message,
+            @RequestBody CancelOrder cancelOrder,
             Principal principal)
     {
         try {
-            return response(this.orderService.cancleOrder(id, findIdByUsername(principal.getName()), message)
+            return response(this.orderService.cancleOrder(cancelOrder.getId(), findIdByUsername(principal.getName()), cancelOrder.getMessage())
                     , HttpStatus.OK);
         } catch (MongoException e) {
             e.printStackTrace();
@@ -74,6 +74,17 @@ public class OrderController extends ControllerBase {
             e.printStackTrace();
             return response("Can't buy now"
                     , HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/is-delivered")
+    public ResponseEntity<?> isDelivered(@RequestBody IdOrder idOrder, Principal principal) {
+        try {
+            return response(this.orderService.isOrderDelivered(idOrder.getOrderId(), findIdByUsername(principal.getName())),
+                    HttpStatus.OK);
+        } catch (MongoException e) {
+            e.printStackTrace();
+            return response("Server Error !!!", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

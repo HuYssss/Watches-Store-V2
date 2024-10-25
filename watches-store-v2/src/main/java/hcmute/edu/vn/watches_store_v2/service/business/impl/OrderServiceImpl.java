@@ -109,7 +109,8 @@ public class OrderServiceImpl implements OrderService {
         if (presentOrder.isPresent() && presentOrder.get().getUserId().equals(userId)) {
 
             presentOrder.get().setState("cancel");
-            presentOrder.get().setCancelMessage(message);
+            if (message == null)        presentOrder.get().setCancelMessage("Nhầm địa chỉ");
+            else                        presentOrder.get().setCancelMessage(message);
 
             return this.orderRepository.save(presentOrder.get());
         }
@@ -159,6 +160,27 @@ public class OrderServiceImpl implements OrderService {
         }
 
         return OrderMapper.mapOrderSuccessResp(order, "http://localhost:5173");
+    }
+
+    @Override
+    public OrderResponse isOrderDelivered(ObjectId orderId, ObjectId userId) {
+        Order order = this.orderRepository.findById(orderId).orElse(null);
+
+        if (order == null) {
+            return null;
+        }
+
+        if (order.getPaymentMethod().equals("cash")) {
+            order.setPaid(true);
+            order.setPaidAt(new Date());
+        }
+
+        order.setDelivered(true);
+        order.setDeliveredAt(new Date());
+        order.setState("complete");
+
+        this.orderRepository.save(order);
+        return OrderMapper.mapOrderResp(order);
     }
 
     private double calculateItemPrice(List<ProductItemResponse> itemResp) {
