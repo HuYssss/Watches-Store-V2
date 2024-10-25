@@ -2,23 +2,23 @@ package hcmute.edu.vn.watches_store_v2.service.business.impl;
 
 
 import com.mongodb.MongoException;
+import hcmute.edu.vn.watches_store_v2.dto.order.request.BuyNowRequest;
 import hcmute.edu.vn.watches_store_v2.dto.order.request.OrderRequest;
 import hcmute.edu.vn.watches_store_v2.dto.order.response.OrderResponse;
 import hcmute.edu.vn.watches_store_v2.dto.order.response.OrderSuccessResponse;
+import hcmute.edu.vn.watches_store_v2.dto.product.response.ProductResponse;
 import hcmute.edu.vn.watches_store_v2.dto.productItem.response.ProductItemResponse;
 import hcmute.edu.vn.watches_store_v2.dto.user.response.ProfileOrder;
 import hcmute.edu.vn.watches_store_v2.entity.Coupon;
 import hcmute.edu.vn.watches_store_v2.entity.Order;
+import hcmute.edu.vn.watches_store_v2.entity.Product;
 import hcmute.edu.vn.watches_store_v2.entity.ProductItem;
 import hcmute.edu.vn.watches_store_v2.helper.payment_vnpay.PaymentService;
 import hcmute.edu.vn.watches_store_v2.mapper.OrderMapper;
 import hcmute.edu.vn.watches_store_v2.mapper.ProductItemMapper;
 import hcmute.edu.vn.watches_store_v2.repository.OrderRepository;
 import hcmute.edu.vn.watches_store_v2.service.business.OrderService;
-import hcmute.edu.vn.watches_store_v2.service.component.CouponService;
-import hcmute.edu.vn.watches_store_v2.service.component.MailService;
-import hcmute.edu.vn.watches_store_v2.service.component.ProductItemService;
-import hcmute.edu.vn.watches_store_v2.service.component.UserService;
+import hcmute.edu.vn.watches_store_v2.service.component.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
@@ -37,9 +37,9 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final ProductItemService productItemService;
-    private final UserService userService;
     private final CouponService couponService;
     private final MailService mailService;
+    private final ProductService productService;
 
     @Override
     public List<OrderResponse> getAllUserOrders(ObjectId userId) {
@@ -129,6 +129,36 @@ public class OrderServiceImpl implements OrderService {
         }
 
         return null;
+    }
+
+    @Override
+    public OrderSuccessResponse buyNow(BuyNowRequest buyNowRequest, ObjectId userId) throws UnsupportedEncodingException {
+        ProductResponse product = this.productService.getProductById(buyNowRequest.getProductId());
+        if (product == null)        return null;
+
+        ProductItemResponse itemResponse = ProductItemMapper.mapNewResponse(product, buyNowRequest.getQuantity());
+        Coupon coupon = this.couponService.findCouponByCouponCode(buyNowRequest.getCouponCode());
+
+        Order order = OrderMapper.mapNewOrder(List.of(itemResponse), buyNowRequest, coupon);
+
+        order.setUserId(userId);
+
+        order.setItemsPrice(calculateItemPrice(order.getProducts()));
+
+        double totalPrice = calculateTotalPrice(coupon, order);
+
+        order.setTotalPrice(totalPrice);
+
+        this.orderRepository.save(order);
+
+        this.mailService.orderSuccess(order);
+
+        if (buyNowRequest.getPaymentMethod().equals("vnpay"))
+        {
+            return OrderMapper.mapOrderSuccessResp(order, PaymentService.createPayment(order));
+        }
+
+        return OrderMapper.mapOrderSuccessResp(order, "http://localhost:5173");
     }
 
     private double calculateItemPrice(List<ProductItemResponse> itemResp) {

@@ -1,5 +1,6 @@
 package hcmute.edu.vn.watches_store_v2.mapper;
 
+import hcmute.edu.vn.watches_store_v2.dto.product.response.ProductResponse;
 import hcmute.edu.vn.watches_store_v2.dto.productItem.request.ProductItemRequest;
 import hcmute.edu.vn.watches_store_v2.dto.productItem.request.ProductItemUpdateRequest;
 import hcmute.edu.vn.watches_store_v2.dto.productItem.response.ProductItemResponse;
@@ -42,6 +43,16 @@ public class ProductItemMapper {
                 updateRequest.getQuantity(),
                 null,
                 null
+        );
+    }
+
+    public static ProductItemResponse mapNewResponse(ProductResponse productResponse, int quantity) {
+        ObjectId id = new ObjectId();
+
+        return new ProductItemResponse(
+                id.toHexString(),
+                productResponse,
+                quantity
         );
     }
 }

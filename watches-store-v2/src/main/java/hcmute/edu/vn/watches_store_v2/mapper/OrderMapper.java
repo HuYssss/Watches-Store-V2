@@ -1,5 +1,6 @@
 package hcmute.edu.vn.watches_store_v2.mapper;
 
+import hcmute.edu.vn.watches_store_v2.dto.order.request.BuyNowRequest;
 import hcmute.edu.vn.watches_store_v2.dto.order.request.OrderRequest;
 import hcmute.edu.vn.watches_store_v2.dto.order.response.OrderResponse;
 import hcmute.edu.vn.watches_store_v2.dto.order.response.OrderSuccessResponse;
@@ -7,6 +8,7 @@ import hcmute.edu.vn.watches_store_v2.dto.productItem.response.ProductItemRespon
 import hcmute.edu.vn.watches_store_v2.dto.user.response.ProfileOrder;
 import hcmute.edu.vn.watches_store_v2.entity.Coupon;
 import hcmute.edu.vn.watches_store_v2.entity.Order;
+import hcmute.edu.vn.watches_store_v2.entity.Product;
 import org.bson.types.ObjectId;
 
 import java.util.Date;
@@ -74,6 +76,27 @@ public class OrderMapper {
                 order.getState(),
                 order.getCancelMessage(),
                 redirectUrl
+        );
+    }
+
+    public static Order mapNewOrder(List<ProductItemResponse> items, BuyNowRequest buyNowRequest, Coupon coupon) {
+        return new Order(
+                new ObjectId(),
+                items,
+                buyNowRequest.getPaymentMethod(),
+                0,
+                buyNowRequest.getShippingPrice(),
+                0,
+                buyNowRequest.getProfile(),
+                false,
+                null,
+                false,
+                null,
+                new Date(),
+                null,
+                (coupon != null) ? CouponMapper.mapCouponResponse(coupon) : null,
+                "processing",
+                null
         );
     }
 }

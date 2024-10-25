@@ -2,6 +2,7 @@ package hcmute.edu.vn.watches_store_v2.controller;
 
 import com.mongodb.MongoException;
 import hcmute.edu.vn.watches_store_v2.base.ControllerBase;
+import hcmute.edu.vn.watches_store_v2.dto.order.request.BuyNowRequest;
 import hcmute.edu.vn.watches_store_v2.dto.order.request.OrderRequest;
 import hcmute.edu.vn.watches_store_v2.service.business.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
 import java.security.Principal;
 
 @RestController
@@ -55,6 +57,22 @@ public class OrderController extends ControllerBase {
         } catch (MongoException e) {
             e.printStackTrace();
             return response("Can't cancel order"
+                    , HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/buy-now")
+    public ResponseEntity<?> buyNow(@RequestBody BuyNowRequest buyNowRequest, Principal principal) {
+        try {
+            return response(this.orderService.buyNow(buyNowRequest, findIdByUsername(principal.getName()))
+                    , HttpStatus.OK);
+        } catch (MongoException e) {
+            e.printStackTrace();
+            return response("Can't buy now"
+                    , HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return response("Can't buy now"
                     , HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
