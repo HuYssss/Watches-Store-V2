@@ -4,11 +4,10 @@ import hcmute.edu.vn.watches_store_v2.dto.order.request.BuyNowRequest;
 import hcmute.edu.vn.watches_store_v2.dto.order.request.OrderRequest;
 import hcmute.edu.vn.watches_store_v2.dto.order.response.OrderResponse;
 import hcmute.edu.vn.watches_store_v2.dto.order.response.OrderSuccessResponse;
-import hcmute.edu.vn.watches_store_v2.dto.productItem.response.ProductItemResponse;
+import hcmute.edu.vn.watches_store_v2.dto.orderLine.response.OrderLineResponse;
 import hcmute.edu.vn.watches_store_v2.dto.user.response.ProfileOrder;
 import hcmute.edu.vn.watches_store_v2.entity.Coupon;
 import hcmute.edu.vn.watches_store_v2.entity.Order;
-import hcmute.edu.vn.watches_store_v2.entity.Product;
 import org.bson.types.ObjectId;
 
 import java.util.Date;
@@ -36,7 +35,7 @@ public class OrderMapper {
         );
     }
 
-    public static Order mapOrder(List<ProductItemResponse> items, ProfileOrder profile, OrderRequest orderRequest, Coupon coupon) {
+    public static Order mapOrder(List<OrderLineResponse> items, ProfileOrder profile, OrderRequest orderRequest, Coupon coupon) {
         return new Order(
                 new ObjectId(),
                 items,
@@ -79,7 +78,7 @@ public class OrderMapper {
         );
     }
 
-    public static Order mapNewOrder(List<ProductItemResponse> items, BuyNowRequest buyNowRequest, Coupon coupon) {
+    public static Order mapNewOrder(List<OrderLineResponse> items, BuyNowRequest buyNowRequest, Coupon coupon) {
         return new Order(
                 new ObjectId(),
                 items,

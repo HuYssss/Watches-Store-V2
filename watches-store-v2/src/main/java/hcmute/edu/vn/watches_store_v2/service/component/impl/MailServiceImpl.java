@@ -69,17 +69,48 @@ public class MailServiceImpl implements MailService {
 
     @Override
     public String blockUser(String email, String username, String message) {
-        return "";
+        String subject = "Thông báo tài khoản đã bị khóa";
+
+        Context context = new Context();
+        context.setVariable("username", username);
+        context.setVariable("messages", message);
+
+        String body = templateEngine.process("block-user", context);
+
+        String[] cc = new String[1];
+        cc[0] = email;
+
+        try {
+            return sendMail(email, cc, subject, body);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Send mail failure !!!";
+        }
     }
 
     @Override
     public String deleteUser(String email, String username) {
-        return "";
+        return null;
     }
 
     @Override
     public String unBlockUser(String email, String username) {
-        return "";
+        String subject = "Thông báo mở khóa tài khoản";
+
+        Context context = new Context();
+        context.setVariable("username", username);
+
+        String body = templateEngine.process("unblock-user", context);
+
+        String[] cc = new String[1];
+        cc[0] = email;
+
+        try {
+            return sendMail(email, cc, subject, body);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Send mail failure !!!";
+        }
     }
 
     @Override

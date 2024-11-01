@@ -1,16 +1,16 @@
 package hcmute.edu.vn.watches_store_v2.service.business;
 
-import hcmute.edu.vn.watches_store_v2.dto.productItem.request.ProductItemRequest;
-import hcmute.edu.vn.watches_store_v2.dto.productItem.request.ProductItemUpdateRequest;
-import hcmute.edu.vn.watches_store_v2.dto.productItem.response.ProductItemResponse;
-import hcmute.edu.vn.watches_store_v2.entity.ProductItem;
+import hcmute.edu.vn.watches_store_v2.dto.orderLine.request.OrderLineRequest;
+import hcmute.edu.vn.watches_store_v2.dto.orderLine.request.OrderLineUpdateRequest;
+import hcmute.edu.vn.watches_store_v2.dto.orderLine.response.OrderLineResponse;
+import hcmute.edu.vn.watches_store_v2.entity.OrderLine;
 import org.bson.types.ObjectId;
 
 import java.util.List;
 
 public interface CartService {
-    List<ProductItemResponse> getCart(ObjectId userId);
-    ProductItemResponse addProductToCart(ObjectId userId, ProductItemRequest productItemRequest);
-    ProductItem deleteProductFromCart(ObjectId userId, ObjectId itemId);
-    List<ProductItem> updateCart(ObjectId userId, List<ProductItemUpdateRequest> itemUpdates);
+    List<OrderLineResponse> getCart(ObjectId userId);
+    OrderLineResponse addProductToCart(ObjectId userId, OrderLineRequest orderLineRequest);
+    OrderLine deleteProductFromCart(ObjectId userId, ObjectId itemId);
+    List<OrderLine> updateCart(ObjectId userId, List<OrderLineUpdateRequest> itemUpdates);
 }

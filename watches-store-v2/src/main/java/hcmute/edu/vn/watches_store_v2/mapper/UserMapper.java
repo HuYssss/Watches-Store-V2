@@ -38,7 +38,7 @@ public class UserMapper {
                 user.getAddress(),
                 user.getState(),
                 user.isVerified(),
-                false
+                user.getRoles().equals("ROLE_ADMIN")
         );
     }
 

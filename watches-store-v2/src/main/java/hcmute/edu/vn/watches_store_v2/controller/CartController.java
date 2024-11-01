@@ -2,8 +2,8 @@ package hcmute.edu.vn.watches_store_v2.controller;
 
 import com.mongodb.MongoException;
 import hcmute.edu.vn.watches_store_v2.base.ControllerBase;
-import hcmute.edu.vn.watches_store_v2.dto.productItem.request.ProductItemRequest;
-import hcmute.edu.vn.watches_store_v2.dto.productItem.request.ProductItemUpdateRequest;
+import hcmute.edu.vn.watches_store_v2.dto.orderLine.request.OrderLineRequest;
+import hcmute.edu.vn.watches_store_v2.dto.orderLine.request.OrderLineUpdateRequest;
 import hcmute.edu.vn.watches_store_v2.service.business.CartService;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
@@ -30,10 +30,10 @@ public class CartController extends ControllerBase {
     }
 
     @PostMapping("/add-product-to-cart")
-    public ResponseEntity<?> addProductToCart(@RequestBody ProductItemRequest productItemRequest, Principal principal) {
+    public ResponseEntity<?> addProductToCart(@RequestBody OrderLineRequest orderLineRequest, Principal principal) {
         try {
             return response(
-                    this.cartService.addProductToCart(findIdByUsername(principal.getName()), productItemRequest)
+                    this.cartService.addProductToCart(findIdByUsername(principal.getName()), orderLineRequest)
                     , HttpStatus.OK);
         } catch (MongoException e) {
             return response(e, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -41,7 +41,7 @@ public class CartController extends ControllerBase {
     }
 
     @PutMapping("/update-cart")
-    public ResponseEntity<?> updateCart(@RequestBody List<ProductItemUpdateRequest> updateRequests, Principal principal) {
+    public ResponseEntity<?> updateCart(@RequestBody List<OrderLineUpdateRequest> updateRequests, Principal principal) {
         try {
             return response(
                     this.cartService.updateCart(findIdByUsername(principal.getName()), updateRequests)

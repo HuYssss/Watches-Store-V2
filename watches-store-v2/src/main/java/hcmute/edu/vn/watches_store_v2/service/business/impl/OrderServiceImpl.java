@@ -7,15 +7,14 @@ import hcmute.edu.vn.watches_store_v2.dto.order.request.OrderRequest;
 import hcmute.edu.vn.watches_store_v2.dto.order.response.OrderResponse;
 import hcmute.edu.vn.watches_store_v2.dto.order.response.OrderSuccessResponse;
 import hcmute.edu.vn.watches_store_v2.dto.product.response.ProductResponse;
-import hcmute.edu.vn.watches_store_v2.dto.productItem.response.ProductItemResponse;
+import hcmute.edu.vn.watches_store_v2.dto.orderLine.response.OrderLineResponse;
 import hcmute.edu.vn.watches_store_v2.dto.user.response.ProfileOrder;
 import hcmute.edu.vn.watches_store_v2.entity.Coupon;
 import hcmute.edu.vn.watches_store_v2.entity.Order;
-import hcmute.edu.vn.watches_store_v2.entity.Product;
-import hcmute.edu.vn.watches_store_v2.entity.ProductItem;
+import hcmute.edu.vn.watches_store_v2.entity.OrderLine;
 import hcmute.edu.vn.watches_store_v2.helper.payment_vnpay.PaymentService;
 import hcmute.edu.vn.watches_store_v2.mapper.OrderMapper;
-import hcmute.edu.vn.watches_store_v2.mapper.ProductItemMapper;
+import hcmute.edu.vn.watches_store_v2.mapper.OrderLineMapper;
 import hcmute.edu.vn.watches_store_v2.repository.OrderRepository;
 import hcmute.edu.vn.watches_store_v2.service.business.OrderService;
 import hcmute.edu.vn.watches_store_v2.service.component.*;
@@ -36,7 +35,7 @@ import java.util.stream.Collectors;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
-    private final ProductItemService productItemService;
+    private final OrderLineService orderLineService;
     private final CouponService couponService;
     private final MailService mailService;
     private final ProductService productService;
@@ -59,7 +58,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderSuccessResponse createOrder(OrderRequest orderReq, ObjectId userId) {
 
         try {
-            List<ProductItemResponse> itemResp = this.productItemService.findAllByItemId(orderReq.getProductItem());
+            List<OrderLineResponse> itemResp = this.orderLineService.findAllByItemId(orderReq.getProductItem());
 
             ProfileOrder profileOrder = orderReq.getProfile();
 
@@ -75,12 +74,12 @@ public class OrderServiceImpl implements OrderService {
 
             order.setTotalPrice(totalPrice);
 
-            List<ProductItem> items = itemResp
+            List<OrderLine> items = itemResp
                     .stream()
-                    .map(i -> ProductItemMapper.mapProductItemFromResp(i))
+                    .map(i -> OrderLineMapper.mapOrderLineFromResp(i))
                     .collect(Collectors.toList());
 
-            this.productItemService.updateOrderItem(items);
+            this.orderLineService.updateOrderItem(items);
 
             this.orderRepository.save(order);
 
@@ -106,7 +105,8 @@ public class OrderServiceImpl implements OrderService {
 
         Optional<Order> presentOrder = this.orderRepository.findById(order);
 
-        if (presentOrder.isPresent() && presentOrder.get().getUserId().equals(userId)) {
+        if (presentOrder.isPresent() && presentOrder.get().getUserId().equals(userId)
+                && !presentOrder.get().getState().equals("processing")) {
 
             presentOrder.get().setState("cancel");
             if (message == null)        presentOrder.get().setCancelMessage("Nhầm địa chỉ");
@@ -137,7 +137,7 @@ public class OrderServiceImpl implements OrderService {
         ProductResponse product = this.productService.getProductById(buyNowRequest.getProductId());
         if (product == null)        return null;
 
-        ProductItemResponse itemResponse = ProductItemMapper.mapNewResponse(product, buyNowRequest.getQuantity());
+        OrderLineResponse itemResponse = OrderLineMapper.mapNewResponse(product, buyNowRequest.getQuantity());
         Coupon coupon = this.couponService.findCouponByCouponCode(buyNowRequest.getCouponCode());
 
         Order order = OrderMapper.mapNewOrder(List.of(itemResponse), buyNowRequest, coupon);
@@ -146,9 +146,13 @@ public class OrderServiceImpl implements OrderService {
 
         order.setItemsPrice(calculateItemPrice(order.getProducts()));
 
+        log.info("[OrderService] :: ItemPrice: {}", order.getItemsPrice());
+
         double totalPrice = calculateTotalPrice(coupon, order);
 
         order.setTotalPrice(totalPrice);
+
+        log.info("[OrderService] :: TotalPrice: {}", order.getTotalPrice());
 
         this.orderRepository.save(order);
 
@@ -183,11 +187,44 @@ public class OrderServiceImpl implements OrderService {
         return OrderMapper.mapOrderResp(order);
     }
 
-    private double calculateItemPrice(List<ProductItemResponse> itemResp) {
+    @Override
+    public OrderResponse approvalOrder(ObjectId orderId) {
+
+        Order order = this.orderRepository.findById(orderId).orElse(null);
+
+        if (order != null) {
+            order.setState("delivery");
+            this.orderRepository.save(order);
+        }
+
+        return null;
+    }
+
+    @Override
+    public OrderResponse declineOrder(ObjectId orderId) {
+        Order order = this.orderRepository.findById(orderId).orElse(null);
+
+        if (order != null) {
+            order.setState("cancel");
+            order.setCancelMessage("Admin decline");
+            this.orderRepository.save(order);
+        }
+
+        return null;
+    }
+
+    @Override
+    public List<OrderResponse> getAllOrders() {
+        return this.orderRepository.findAll().stream()
+                .map(OrderMapper::mapOrderResp)
+                .collect(Collectors.toList());
+    }
+
+    private double calculateItemPrice(List<OrderLineResponse> itemResp) {
         double price = 0;
 
-        for (ProductItemResponse productItemResponse : itemResp) {
-            price += (productItemResponse.getProduct().getPrice() - productItemResponse.getProduct().getDiscount()) * productItemResponse.getQuantity();
+        for (OrderLineResponse orderLineResponse : itemResp) {
+            price += (orderLineResponse.getProduct().getPrice() - orderLineResponse.getProduct().getDiscount()) * orderLineResponse.getQuantity();
         }
 
         return price;
