@@ -48,4 +48,6 @@ public class OrderSuccessResponse {
     private String cancelMessage;
 
     private String redirectUrl;
+
+    private boolean isBuyNow;
 }

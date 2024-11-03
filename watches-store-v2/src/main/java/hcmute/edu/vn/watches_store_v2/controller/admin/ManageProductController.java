@@ -1,6 +1,8 @@
 package hcmute.edu.vn.watches_store_v2.controller.admin;
 
+import com.mongodb.MongoException;
 import hcmute.edu.vn.watches_store_v2.base.ControllerBase;
+import hcmute.edu.vn.watches_store_v2.dto.product.request.IdProductRequest;
 import hcmute.edu.vn.watches_store_v2.dto.product.request.ProductRequest;
 import hcmute.edu.vn.watches_store_v2.dto.product.request.UpdateDiscount;
 import hcmute.edu.vn.watches_store_v2.dto.product.request.UpdateDiscountProducts;
@@ -24,6 +26,38 @@ import java.util.List;
 @RequestMapping("api/product")
 public class ManageProductController extends ControllerBase {
     private final ProductService productService;
+
+    @PreAuthorize("hasAuthority('SCOPE_ACCESS_FULL_SYSTEM')")
+    @GetMapping("/get-all-product")
+    public ResponseEntity<?> getAllProduct(
+            @RequestParam(defaultValue = "none", required = false) String gender,
+            @RequestParam(defaultValue = "none", required = false) String wireMaterial,
+            @RequestParam(defaultValue = "none", required = false) String shape,
+            @RequestParam(defaultValue = "none", required = false) String waterProof,
+            @RequestParam(defaultValue = "none", required = false) String sortBy,
+            @RequestParam(defaultValue = "none", required = false) String color,
+            @RequestParam(defaultValue = "none", required = false) String q,
+            @RequestParam(defaultValue = "0", required = false) double minPrice,
+            @RequestParam(defaultValue = "0", required = false) double maxPrice,
+            @RequestParam(defaultValue = "1", required = false) int pageNum
+    ) {
+        try {
+            return response(this.productService.getAllProductAdmin(
+                    gender,
+                    wireMaterial,
+                    shape,
+                    waterProof,
+                    sortBy,
+                    color,
+                    q,
+                    minPrice,
+                    maxPrice,
+                    pageNum
+            ), HttpStatus.OK);
+        } catch (MongoException e) {
+            return response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @PreAuthorize("hasAuthority('SCOPE_ACCESS_FULL_SYSTEM')")
     @PostMapping("/create")

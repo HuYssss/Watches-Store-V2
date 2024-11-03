@@ -56,7 +56,7 @@ public class OrderMapper {
         );
     }
 
-    public static OrderSuccessResponse mapOrderSuccessResp(Order order, String redirectUrl) {
+    public static OrderSuccessResponse mapOrderSuccessResp(Order order, String redirectUrl, boolean isBuyNow) {
         return new OrderSuccessResponse(
                 order.getId().toHexString(),
                 order.getProducts(),
@@ -74,7 +74,8 @@ public class OrderMapper {
                 order.getCoupon(),
                 order.getState(),
                 order.getCancelMessage(),
-                redirectUrl
+                redirectUrl,
+                isBuyNow
         );
     }
 

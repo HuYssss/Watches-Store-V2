@@ -19,6 +19,11 @@ public interface ProductService {
             , String q
             , double minPrice, double maxPrice, int pageNum);
 
+    PageResponse getAllProductAdmin(String gender, String wireMaterial
+            , String shape, String waterProof, String sortBy, String color
+            , String q
+            , double minPrice, double maxPrice, int pageNum);
+
     List<ProductResponse> getProductsByCategory(ObjectId idCategory);
     List<ProductResponse> updateDiscountAllProduct(ObjectId idCategory, double discount);
     ProductResponse updateDiscount(ObjectId idProduct, double discount);

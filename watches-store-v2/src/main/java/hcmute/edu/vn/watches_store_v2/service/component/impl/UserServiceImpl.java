@@ -62,6 +62,7 @@ public class UserServiceImpl implements UserService {
         try {
             return this.userRepository.findAll()
                     .stream()
+                    .filter(user -> !user.getRoles().equals("ROLE_ADMIN"))
                     .map(UserMapper::convertProfileUser)
                     .collect(Collectors.toList());
         } catch (MongoException e) {

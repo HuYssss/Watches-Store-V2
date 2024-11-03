@@ -39,9 +39,11 @@ public class JwtAccessTokenFilter extends OncePerRequestFilter {
         try{
             log.info("[JwtAccessTokenFilter:doFilterInternal] :: Started ");
 
-            log.info("[JwtAccessTokenFilter:doFilterInternal]Filtering the Http Request:{}",request.getRequestURI());
+            log.info("[JwtAccessTokenFilter:doFilterInternal]Filtering the Http Request:{}", request.getRequestURI());
 
             final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+
+            log.info("[JWT AccessToken] :: AuthHeader = {}",authHeader);
 
             JwtDecoder jwtDecoder =  NimbusJwtDecoder.withPublicKey(rsaKeyRecord.rsaPublicKey()).build();
 

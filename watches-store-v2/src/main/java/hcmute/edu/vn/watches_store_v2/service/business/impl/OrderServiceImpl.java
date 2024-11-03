@@ -87,10 +87,10 @@ public class OrderServiceImpl implements OrderService {
 
             if (orderReq.getPaymentMethod().equals("vnpay"))
             {
-                return OrderMapper.mapOrderSuccessResp(order, PaymentService.createPayment(order));
+                return OrderMapper.mapOrderSuccessResp(order, PaymentService.createPayment(order), false);
             }
 
-            return OrderMapper.mapOrderSuccessResp(order, "http://localhost:5173");
+            return OrderMapper.mapOrderSuccessResp(order, "http://localhost:5173", false);
 
         } catch (MongoException e) {
             e.printStackTrace();
@@ -109,7 +109,7 @@ public class OrderServiceImpl implements OrderService {
                 && !presentOrder.get().getState().equals("processing")) {
 
             presentOrder.get().setState("cancel");
-            if (message == null)        presentOrder.get().setCancelMessage("Nhầm địa chỉ");
+            if (message == null)        presentOrder.get().setCancelMessage("Không có nhu cầu mua");
             else                        presentOrder.get().setCancelMessage(message);
 
             return this.orderRepository.save(presentOrder.get());
@@ -160,10 +160,10 @@ public class OrderServiceImpl implements OrderService {
 
         if (buyNowRequest.getPaymentMethod().equals("vnpay"))
         {
-            return OrderMapper.mapOrderSuccessResp(order, PaymentService.createPayment(order));
+            return OrderMapper.mapOrderSuccessResp(order, PaymentService.createPayment(order), true);
         }
 
-        return OrderMapper.mapOrderSuccessResp(order, "http://localhost:5173");
+        return OrderMapper.mapOrderSuccessResp(order, "http://localhost:5173", true);
     }
 
     @Override
