@@ -37,8 +37,6 @@ public class Product {
 
     private String shape;
 
-    private String condition;
-
     private double weight;
 
     private double length;
@@ -51,7 +49,7 @@ public class Product {
 
     private String description;
 
-    private String color;
+    private List<String> color;
 
     private double discount;
 

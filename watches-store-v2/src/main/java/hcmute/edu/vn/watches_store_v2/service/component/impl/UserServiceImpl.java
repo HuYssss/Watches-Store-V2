@@ -13,6 +13,7 @@ import org.bson.types.ObjectId;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -78,6 +79,9 @@ public class UserServiceImpl implements UserService {
         if (user != null && !user.getRoles().equals("ROLE_ADMIN")) {
 
             user.setState("blocked");
+            user.setReasonBlock(message);
+            user.setBlockAt(new Date());
+
             this.userRepository.save(user);
 
             this.mailService.blockUser(user.getEmail(), user.getUsername(), message);
@@ -94,6 +98,9 @@ public class UserServiceImpl implements UserService {
         if (user != null && user.getState().equals("blocked")) {
 
             user.setState("active");
+            user.setReasonBlock(null);
+            user.setBlockAt(null);
+
             this.userRepository.save(user);
 
             this.mailService.unBlockUser(user.getEmail(), user.getUsername());

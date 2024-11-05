@@ -67,7 +67,7 @@ public class ClientController extends ControllerBase {
     }
 
     @GetMapping("/get-all-coupon")
-    public ResponseEntity<?> getAllCoupon(Principal principal) {
+    public ResponseEntity<?> getAllCoupon() {
         try {
             return response(this.couponService.getAllCoupons(), HttpStatus.OK);
         } catch (MongoException e) {

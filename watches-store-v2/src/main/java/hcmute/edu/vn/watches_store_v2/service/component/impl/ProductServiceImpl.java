@@ -137,7 +137,7 @@ public class ProductServiceImpl implements ProductService {
                 .filter(product -> color.equals("none") ||
                         Arrays.stream(color.split(","))
                                 .map(String::trim)
-                                .anyMatch(c -> product.getColor().toLowerCase(new Locale("vi", "VN")).contains(color.toLowerCase(new Locale("vi", "VN")))))
+                                .anyMatch(c -> product.getColor().stream().anyMatch(color1 -> color1.equals(c))))
 
                 .filter(product -> (minPrice == 0 && maxPrice == 0)
                         || (minPrice > 0 && product.getPrice() >= minPrice && (maxPrice == 0 || product.getPrice() <= maxPrice))
@@ -216,7 +216,7 @@ public class ProductServiceImpl implements ProductService {
                 .filter(product -> color.equals("none") ||
                         Arrays.stream(color.split(","))
                                 .map(String::trim)
-                                .anyMatch(c -> product.getColor().toLowerCase(new Locale("vi", "VN")).contains(color.toLowerCase(new Locale("vi", "VN")))))
+                                .anyMatch(product.getColor()::contains))
 
                 .filter(product -> (minPrice == 0 && maxPrice == 0)
                         || (minPrice > 0 && product.getPrice() >= minPrice && (maxPrice == 0 || product.getPrice() <= maxPrice))

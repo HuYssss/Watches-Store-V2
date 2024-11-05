@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,6 +24,10 @@ public class ProfileResponse {
     private String avatarImg;
 
     private Address address;
+
+    private String reasonBlock;
+
+    private Date blockAt;
 
     private String state;
 

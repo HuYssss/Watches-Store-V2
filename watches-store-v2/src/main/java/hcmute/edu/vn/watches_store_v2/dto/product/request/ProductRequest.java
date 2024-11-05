@@ -31,8 +31,6 @@ public class ProductRequest {
 
     private String shape;
 
-    private String condition;
-
     private double weight;
 
     private double length;
@@ -45,7 +43,7 @@ public class ProductRequest {
 
     private String description;
 
-    private String color;
+    private List<String> color;
 
     private double discount;
 

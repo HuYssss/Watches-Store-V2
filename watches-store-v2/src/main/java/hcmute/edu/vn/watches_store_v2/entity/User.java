@@ -40,6 +40,10 @@ public class User {
 
     private String provider;
 
+    private String reasonBlock;
+
+    private Date blockAt;
+
     private boolean verified;
 
     private String token;

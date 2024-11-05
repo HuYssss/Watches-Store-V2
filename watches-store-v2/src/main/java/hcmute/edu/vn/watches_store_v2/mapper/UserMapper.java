@@ -21,6 +21,8 @@ public class UserMapper {
                 "ROLE_USER",
                 "active",
                 "Local",
+                null,
+                null,
                 false,
                 null,
                 null
@@ -36,28 +38,11 @@ public class UserMapper {
                 user.getFullName(),
                 user.getAvatarImg(),
                 user.getAddress(),
+                user.getReasonBlock(),
+                user.getBlockAt(),
                 user.getState(),
                 user.isVerified(),
                 user.getRoles().equals("ROLE_ADMIN")
-        );
-    }
-
-    public static User mapNewEmptyUser() {
-        return new User(
-                new ObjectId(),
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                null,
-                "ROLE_USER",
-                "active",
-                "",
-                false,
-                "",
-                null
         );
     }
 
