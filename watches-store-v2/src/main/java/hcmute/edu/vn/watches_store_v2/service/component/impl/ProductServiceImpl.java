@@ -117,7 +117,9 @@ public class ProductServiceImpl implements ProductService {
 
         log.info("[ProductServiceImpl] Starting all products");
 
-        List<ProductResponse> allProducts = this.productRepository.findAll()
+        List<Product> products = this.productRepository.findAll();
+
+        List<ProductResponse> allProducts = products
                 .stream()
                 .map(ProductMapper::mapProductResp)
                 .filter(product -> gender.equals("none") || product.getGenderUser().toLowerCase(new Locale("vi", "VN")).contains(gender.toLowerCase(new Locale("vi", "VN"))))
@@ -189,6 +191,21 @@ public class ProductServiceImpl implements ProductService {
 
         pageResponse.setProductResponses(allProducts);
         pageResponse.setTotalPages(totalPages);
+
+        products.forEach(product -> {
+            if (!pageResponse.getWireMaterial().contains(product.getWireMaterial())) {
+                pageResponse.addTypeWireMaterial(product.getWireMaterial().trim());
+            }
+
+            if (!pageResponse.getShape().contains(product.getShape())) {
+                pageResponse.addTypeShape(product.getShape());
+            }
+
+            if (!pageResponse.getWaterProof().contains(product.getWaterproof())) {
+                pageResponse.addTypeWaterProof(product.getWaterproof());
+            }
+        });
+
         return pageResponse;
     }
 
@@ -196,7 +213,9 @@ public class ProductServiceImpl implements ProductService {
     public PageResponse getAllProductAdmin(String gender, String wireMaterial, String shape, String waterProof, String sortBy, String color, String q, double minPrice, double maxPrice, int pageNum) {
         log.info("[ProductServiceImpl] Starting all products");
 
-        List<ProductResponse> allProducts = this.productRepository.findAll()
+        List<Product> products = this.productRepository.findAll();
+
+        List<ProductResponse> allProducts = products
                 .stream()
                 .map(ProductMapper::mapProductResp)
                 .filter(product -> gender.equals("none") || product.getGenderUser().toLowerCase(new Locale("vi", "VN")).contains(gender.toLowerCase(new Locale("vi", "VN"))))
@@ -216,13 +235,14 @@ public class ProductServiceImpl implements ProductService {
                 .filter(product -> color.equals("none") ||
                         Arrays.stream(color.split(","))
                                 .map(String::trim)
-                                .anyMatch(product.getColor()::contains))
+                                .anyMatch(c -> product.getColor().stream().anyMatch(color1 -> color1.equals(c))))
 
                 .filter(product -> (minPrice == 0 && maxPrice == 0)
                         || (minPrice > 0 && product.getPrice() >= minPrice && (maxPrice == 0 || product.getPrice() <= maxPrice))
                         || (maxPrice > 0 && product.getPrice() <= maxPrice)
                 )
                 .filter(product -> waterProof.equals("none") || product.getWaterproof() == Integer.parseInt(waterProof))
+                .filter(product -> !product.getState().equals("deleted"))
                 .collect(Collectors.toList());
 
         if (!sortBy.equals("none")) {
@@ -267,6 +287,21 @@ public class ProductServiceImpl implements ProductService {
 
         pageResponse.setProductResponses(allProducts);
         pageResponse.setTotalPages(totalPages);
+
+        products.forEach(product -> {
+            if (!pageResponse.getWireMaterial().contains(product.getWireMaterial())) {
+                pageResponse.addTypeWireMaterial(product.getWireMaterial().trim());
+            }
+
+            if (!pageResponse.getShape().contains(product.getShape())) {
+                pageResponse.addTypeShape(product.getShape());
+            }
+
+            if (!pageResponse.getWaterProof().contains(product.getWaterproof())) {
+                pageResponse.addTypeWaterProof(product.getWaterproof());
+            }
+        });
+
         return pageResponse;
     }
 

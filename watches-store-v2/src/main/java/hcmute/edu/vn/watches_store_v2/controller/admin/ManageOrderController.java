@@ -55,4 +55,18 @@ public class ManageOrderController extends ControllerBase {
 
         return response(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @PreAuthorize("hasAuthority('SCOPE_ACCESS_FULL_SYSTEM')")
+    @GetMapping("get-by-id")
+    public ResponseEntity<?> getOrderById(@RequestParam ObjectId orderId) {
+        try {
+            OrderResponse response = this.orderService.getOrderById(orderId);
+            if (response != null) {
+                return response(response, HttpStatus.OK);
+            } else
+                return response(null, HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return response(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

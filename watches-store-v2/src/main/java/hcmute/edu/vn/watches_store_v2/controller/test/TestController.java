@@ -2,6 +2,7 @@ package hcmute.edu.vn.watches_store_v2.controller.test;
 
 import hcmute.edu.vn.watches_store_v2.base.ControllerBase;
 import hcmute.edu.vn.watches_store_v2.entity.Order;
+import hcmute.edu.vn.watches_store_v2.entity.Product;
 import hcmute.edu.vn.watches_store_v2.repository.OrderRepository;
 import hcmute.edu.vn.watches_store_v2.repository.ProductRepository;
 import hcmute.edu.vn.watches_store_v2.service.business.OrderService;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/test")
@@ -40,6 +43,20 @@ public class TestController extends ControllerBase {
         Order order = this.orderRepository.findById(new ObjectId(id)).orElse(null);
 
         this.mailService.orderSuccess(order);
+
+        return response(null, HttpStatus.OK);
+    }
+
+    @GetMapping("/trim-product")
+    public ResponseEntity<?> getTrimProduct() {
+        List<Product> products = this.productRepository.findAll();
+
+        products.forEach(product -> {
+            product.setWireMaterial(product.getWireMaterial().trim());
+            product.setShape(product.getShape().trim());
+        });
+
+        this.productRepository.saveAll(products);
 
         return response(null, HttpStatus.OK);
     }

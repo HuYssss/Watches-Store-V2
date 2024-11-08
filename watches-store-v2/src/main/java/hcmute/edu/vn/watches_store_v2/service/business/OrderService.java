@@ -22,4 +22,5 @@ public interface OrderService {
     OrderResponse approvalOrder(ObjectId orderId);
     OrderResponse declineOrder(ObjectId orderId);
     List<OrderResponse> getAllOrders();
+    OrderResponse getOrderById(ObjectId orderId);
 }

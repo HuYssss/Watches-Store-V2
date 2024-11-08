@@ -220,6 +220,16 @@ public class OrderServiceImpl implements OrderService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public OrderResponse getOrderById(ObjectId orderId) {
+        try {
+            return OrderMapper.mapOrderResp(this.orderRepository.findById(orderId).orElse(null));
+        } catch (MongoException e) {
+            e.printStackTrace();
+            throw new MongoException("Can't get order");
+        }
+    }
+
     private double calculateItemPrice(List<OrderLineResponse> itemResp) {
         double price = 0;
 
