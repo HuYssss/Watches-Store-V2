@@ -13,4 +13,8 @@ public interface CouponService {
     Coupon deleteCoupon(ObjectId couponId);
     Coupon findCouponByCouponCode(String couponCode);
     List<CouponResponse> getAllCoupons();
+
+    CouponResponse getCouponById(ObjectId couponId);
+    CouponResponse activeCoupon(ObjectId couponId);
+    CouponResponse inactiveCoupon(ObjectId couponId);
 }

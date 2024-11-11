@@ -3,6 +3,7 @@ package hcmute.edu.vn.watches_store_v2.controller.admin;
 import com.mongodb.MongoException;
 import hcmute.edu.vn.watches_store_v2.base.ControllerBase;
 import hcmute.edu.vn.watches_store_v2.dto.coupon.request.CouponRequest;
+import hcmute.edu.vn.watches_store_v2.dto.coupon.response.CouponResponse;
 import hcmute.edu.vn.watches_store_v2.entity.Coupon;
 import hcmute.edu.vn.watches_store_v2.mapper.CouponMapper;
 import hcmute.edu.vn.watches_store_v2.service.component.CouponService;
@@ -71,6 +72,45 @@ public class ManageCouponController extends ControllerBase {
                     this.couponService.deleteCoupon(couponId),
                     HttpStatus.OK
             );
+        } catch (MongoException e) {
+            return response(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PreAuthorize("hasAuthority('SCOPE_ACCESS_FULL_SYSTEM')")
+    @GetMapping("/get-by-id")
+    public ResponseEntity<?> getCouponById(@RequestParam ObjectId couponId) {
+        try {
+            CouponResponse coupon = this.couponService.getCouponById(couponId);
+
+            if (coupon == null)         return response(null, HttpStatus.NOT_FOUND);
+            return response(coupon, HttpStatus.OK);
+        } catch (MongoException e) {
+            return response(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PreAuthorize("hasAuthority('SCOPE_ACCESS_FULL_SYSTEM')")
+    @GetMapping("/active")
+    public ResponseEntity<?> activeCoupon(@RequestParam ObjectId couponId) {
+        try {
+            CouponResponse coupon = this.couponService.activeCoupon(couponId);
+
+            if (coupon == null)         return response(null, HttpStatus.NOT_FOUND);
+            return response(coupon, HttpStatus.OK);
+        } catch (MongoException e) {
+            return response(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PreAuthorize("hasAuthority('SCOPE_ACCESS_FULL_SYSTEM')")
+    @GetMapping("/inactive")
+    public ResponseEntity<?> inactiveCoupon(@RequestParam ObjectId couponId) {
+        try {
+            CouponResponse coupon = this.couponService.inactiveCoupon(couponId);
+
+            if (coupon == null)         return response(null, HttpStatus.NOT_FOUND);
+            return response(coupon, HttpStatus.OK);
         } catch (MongoException e) {
             return response(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }

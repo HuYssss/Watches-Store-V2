@@ -16,7 +16,7 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("api/category")
+@RequestMapping("api/order")
 public class ManageOrderController extends ControllerBase {
 
     private final OrderService orderService;

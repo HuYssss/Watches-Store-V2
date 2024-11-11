@@ -103,4 +103,49 @@ public class CouponServiceImpl implements CouponService {
             throw new MongoException("Can't find coupon");
         }
     }
+
+    @Override
+    public CouponResponse getCouponById(ObjectId couponId) {
+        try {
+            Coupon coupon = this.couponRepository.findById(couponId).orElse(null);
+            if (coupon == null)
+               return null;
+            return CouponMapper.mapCouponResponse(coupon);
+        } catch (MongoException e) {
+            e.printStackTrace();
+            throw new MongoException("Can't find coupon");
+        }
+    }
+
+    @Override
+    public CouponResponse activeCoupon(ObjectId couponId) {
+        try {
+            Coupon coupon = this.couponRepository.findById(couponId).orElse(null);
+            if (coupon == null)
+                return null;
+
+            coupon.setState("active");
+            this.couponRepository.save(coupon);
+            return CouponMapper.mapCouponResponse(coupon);
+        } catch (MongoException e) {
+            e.printStackTrace();
+            throw new MongoException("Can't active coupon");
+        }
+    }
+
+    @Override
+    public CouponResponse inactiveCoupon(ObjectId couponId) {
+        try {
+            Coupon coupon = this.couponRepository.findById(couponId).orElse(null);
+            if (coupon == null)
+                return null;
+
+            coupon.setState("inactive");
+            this.couponRepository.save(coupon);
+            return CouponMapper.mapCouponResponse(coupon);
+        } catch (MongoException e) {
+            e.printStackTrace();
+            throw new MongoException("Can't inactive coupon");
+        }
+    }
 }
