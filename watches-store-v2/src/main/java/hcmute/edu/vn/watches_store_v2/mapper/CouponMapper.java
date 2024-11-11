@@ -12,6 +12,7 @@ public class CouponMapper {
         return new Coupon(
                 new ObjectId(),
                 coupon.getCouponName(),
+                coupon.getImg(),
                 coupon.getCouponCode(),
                 coupon.getDescription(),
                 coupon.getDiscount(),
@@ -28,6 +29,7 @@ public class CouponMapper {
         return new CouponResponse(
                 coupon.getId().toHexString(),
                 coupon.getCouponName(),
+                coupon.getImg(),
                 coupon.getCouponCode(),
                 coupon.getDescription(),
                 coupon.getDiscount(),

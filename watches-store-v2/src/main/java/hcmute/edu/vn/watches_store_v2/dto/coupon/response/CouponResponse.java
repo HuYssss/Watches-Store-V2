@@ -1,5 +1,6 @@
 package hcmute.edu.vn.watches_store_v2.dto.coupon.response;
 
+import hcmute.edu.vn.watches_store_v2.dto.coupon.ProvinceCoupon;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,8 @@ public class CouponResponse {
     private String id;
 
     private String couponName;
+
+    private String img;
 
     private String couponCode;
 
@@ -31,6 +34,6 @@ public class CouponResponse {
 
     private double minPrice;
 
-    private String province;
+    private ProvinceCoupon province;
 
 }

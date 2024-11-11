@@ -91,7 +91,7 @@ public class ManageCouponController extends ControllerBase {
     }
 
     @PreAuthorize("hasAuthority('SCOPE_ACCESS_FULL_SYSTEM')")
-    @GetMapping("/active")
+    @PutMapping("/active")
     public ResponseEntity<?> activeCoupon(@RequestParam ObjectId couponId) {
         try {
             CouponResponse coupon = this.couponService.activeCoupon(couponId);
@@ -104,7 +104,7 @@ public class ManageCouponController extends ControllerBase {
     }
 
     @PreAuthorize("hasAuthority('SCOPE_ACCESS_FULL_SYSTEM')")
-    @GetMapping("/inactive")
+    @PutMapping("/inactive")
     public ResponseEntity<?> inactiveCoupon(@RequestParam ObjectId couponId) {
         try {
             CouponResponse coupon = this.couponService.inactiveCoupon(couponId);
