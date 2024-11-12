@@ -248,7 +248,9 @@ public class OrderServiceImpl implements OrderService {
                 && coupon.getState().equals("active")
                 && coupon.getTimes() > 0) {
 
-            if (coupon.getProvince() != null && order.getUser().getAddress().getProvince().getValue() == coupon.getProvince().getValue()) {
+            if (coupon.getProvince() != null
+                    && (order.getUser().getAddress().getProvince().getValue() == coupon.getProvince().getValue()
+                        || coupon.getProvince().getValue() == 0)) {
                 coupon.setTimes(coupon.getTimes() - 1);
                 price = order.getTotalPrice();
             }
@@ -256,7 +258,9 @@ public class OrderServiceImpl implements OrderService {
                 coupon.setTimes(coupon.getTimes() - 1);
                 price = order.getItemsPrice() * (100 - coupon.getDiscount()) / 100 + order.getShippingPrice();
             }
-
+            if (coupon.getTimes() == 0) {{
+                coupon.setState("expired");
+            }}
             this.couponService.saveCoupon(coupon);
         }
 

@@ -41,13 +41,14 @@ public class CouponServiceImpl implements CouponService {
 
         if (couponReq.getCouponName() != null) { coupon.setCouponName(couponReq.getCouponName()); }
         if (couponReq.getDescription() != null) { coupon.setDescription(couponReq.getDescription()); }
-        if (couponReq.getDiscount() > 0 && coupon.getProvince() == null) { coupon.setDiscount(couponReq.getDiscount()); }
+        if (couponReq.getDiscount() > 0) { coupon.setDiscount(couponReq.getDiscount()); }
         if (couponReq.getCreatedDate() != null) { coupon.setCreatedDate(couponReq.getCreatedDate()); }
         if (couponReq.getExpiryDate() != null) { coupon.setExpiryDate(couponReq.getExpiryDate()); }
         if (couponReq.getTimes() > 0 ) { coupon.setTimes(couponReq.getTimes()); }
         if (couponReq.getState() != null) { coupon.setState(couponReq.getState()); }
-        if (couponReq.getMinPrice() > 0 && coupon.getProvince() == null) { coupon.setMinPrice(couponReq.getMinPrice()); }
-        if (couponReq.getProvince() != null && coupon.getDiscount() == 0) { coupon.setProvince(couponReq.getProvince()); }
+        if (couponReq.getMinPrice() > 0) { coupon.setMinPrice(couponReq.getMinPrice()); }
+        if (couponReq.getProvince() != null) { coupon.setProvince(couponReq.getProvince()); }
+
 
         try {
             this.couponRepository.save(coupon);
