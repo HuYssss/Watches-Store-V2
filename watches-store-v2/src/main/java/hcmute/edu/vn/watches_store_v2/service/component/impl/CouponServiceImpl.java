@@ -39,6 +39,7 @@ public class CouponServiceImpl implements CouponService {
             return null;
         }
 
+        if (couponReq.getImg() != null) { coupon.setImg(couponReq.getImg()); }
         if (couponReq.getCouponName() != null) { coupon.setCouponName(couponReq.getCouponName()); }
         if (couponReq.getDescription() != null) { coupon.setDescription(couponReq.getDescription()); }
         if (couponReq.getDiscount() > 0) { coupon.setDiscount(couponReq.getDiscount()); }
