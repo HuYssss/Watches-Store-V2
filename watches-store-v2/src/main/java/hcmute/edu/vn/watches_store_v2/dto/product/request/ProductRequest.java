@@ -53,5 +53,7 @@ public class ProductRequest {
 
     private int waterproof;
 
+    private String type;
+
     private String state;
 }

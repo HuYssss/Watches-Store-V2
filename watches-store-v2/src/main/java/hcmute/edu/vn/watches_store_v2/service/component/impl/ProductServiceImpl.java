@@ -113,7 +113,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public PageResponse getAllProduct(String gender, String wireMaterial, String shape, String waterProof
-            , String sortBy, String color, String q, double minPrice, double maxPrice, int pageNum) {
+            , String sortBy, String color, String q, String type, double minPrice, double maxPrice, int pageNum) {
 
         log.info("[ProductServiceImpl] Starting all products");
 
@@ -146,6 +146,10 @@ public class ProductServiceImpl implements ProductService {
                         || (maxPrice > 0 && product.getPrice() <= maxPrice)
                 )
                 .filter(product -> waterProof.equals("none") || product.getWaterproof() == Integer.parseInt(waterProof))
+                .filter(product -> type.equals("none") ||
+                        Arrays.stream(type.split(","))
+                                .map(String::trim)
+                                .anyMatch(wm -> product.getType().toLowerCase(new Locale("vi", "VN")).contains(wm.toLowerCase(new Locale("vi", "VN")))))
                 .filter(product -> !product.getState().equals("deleted"))
                 .collect(Collectors.toList());
 
@@ -204,13 +208,20 @@ public class ProductServiceImpl implements ProductService {
             if (!pageResponse.getWaterProof().contains(product.getWaterproof())) {
                 pageResponse.addTypeWaterProof(product.getWaterproof());
             }
+
+            if (!pageResponse.getType().contains(product.getType())) {
+                pageResponse.addType(product.getType());
+            }
         });
 
         return pageResponse;
     }
 
     @Override
-    public PageResponse getAllProductAdmin(String gender, String wireMaterial, String shape, String waterProof, String sortBy, String color, String q, double minPrice, double maxPrice, int pageNum) {
+    public PageResponse getAllProductAdmin(String gender, String wireMaterial
+            , String shape, String waterProof, String sortBy, String color
+            , String q, String type
+            , double minPrice, double maxPrice, int pageNum) {
         log.info("[ProductServiceImpl] Starting all products");
 
         List<Product> products = this.productRepository.findAll();
@@ -242,7 +253,11 @@ public class ProductServiceImpl implements ProductService {
                         || (maxPrice > 0 && product.getPrice() <= maxPrice)
                 )
                 .filter(product -> waterProof.equals("none") || product.getWaterproof() == Integer.parseInt(waterProof))
-                .filter(product -> !product.getState().equals("deleted"))
+                .filter(product -> type.equals("none") ||
+                        Arrays.stream(type.split(","))
+                                .map(String::trim)
+                                .anyMatch(wm -> product.getType().toLowerCase(new Locale("vi", "VN")).contains(wm.toLowerCase(new Locale("vi", "VN")))))
+
                 .collect(Collectors.toList());
 
         if (!sortBy.equals("none")) {

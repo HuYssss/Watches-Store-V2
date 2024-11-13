@@ -37,6 +37,7 @@ public class ManageProductController extends ControllerBase {
             @RequestParam(defaultValue = "none", required = false) String sortBy,
             @RequestParam(defaultValue = "none", required = false) String color,
             @RequestParam(defaultValue = "none", required = false) String q,
+            @RequestParam(defaultValue = "none", required = false) String type,
             @RequestParam(defaultValue = "0", required = false) double minPrice,
             @RequestParam(defaultValue = "0", required = false) double maxPrice,
             @RequestParam(defaultValue = "1", required = false) int pageNum
@@ -50,6 +51,7 @@ public class ManageProductController extends ControllerBase {
                     sortBy,
                     color,
                     q,
+                    type,
                     minPrice,
                     maxPrice,
                     pageNum

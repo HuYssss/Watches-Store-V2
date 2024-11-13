@@ -18,6 +18,8 @@ public class CouponResponse {
 
     private String img;
 
+    private String imageType;
+
     private String couponCode;
 
     private String description;

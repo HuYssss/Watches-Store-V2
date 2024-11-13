@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+
 @RestController
 @RequiredArgsConstructor
 @Slf4j
@@ -39,7 +41,8 @@ public class ManageCouponController extends ControllerBase {
     @PreAuthorize("hasAuthority('SCOPE_ACCESS_FULL_SYSTEM')")
     @PostMapping("/create")
     public ResponseEntity<?> createCoupon(@RequestBody CouponRequest couponRequest) {
-        if (couponRequest.getState() == null)   couponRequest.setState("active");
+        if (couponRequest.getCreatedDate().after(new Date()))       couponRequest.setState("waiting");
+        if (couponRequest.getCreatedDate().before(new Date()))      couponRequest.setState("active");
 
         try {
             return response(

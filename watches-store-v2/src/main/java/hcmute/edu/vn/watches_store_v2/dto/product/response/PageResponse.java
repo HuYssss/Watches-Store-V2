@@ -17,6 +17,7 @@ public class PageResponse {
     private List<String> wireMaterial = new ArrayList<>();
     private List<String> shape = new ArrayList<>();
     private List<Integer> waterProof = new ArrayList<>();
+    private List<String> type = new ArrayList<>();
 
     public void addTypeWireMaterial(String wireMaterial) {
         this.wireMaterial.add(wireMaterial);
@@ -28,5 +29,9 @@ public class PageResponse {
 
     public void addTypeWaterProof(int waterProof) {
         this.waterProof.add(waterProof);
+    }
+
+    public void addType(String type) {
+        this.type.add(type);
     }
 }

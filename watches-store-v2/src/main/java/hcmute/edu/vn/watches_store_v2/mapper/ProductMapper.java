@@ -30,6 +30,7 @@ public class ProductMapper {
                 product.getCategory().toHexString(),
                 product.getAmount(),
                 product.getWaterproof(),
+                product.getType(),
                 product.getState()
         );
     }
@@ -60,6 +61,7 @@ public class ProductMapper {
                         : new ObjectId(productRequest.getCategory()),
                 productRequest.getAmount(),
                 productRequest.getWaterproof(),
+                productRequest.getType(),
                 productRequest.getState()
         );
     }

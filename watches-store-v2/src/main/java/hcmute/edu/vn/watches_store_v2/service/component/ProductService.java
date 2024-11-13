@@ -16,12 +16,12 @@ public interface ProductService {
     Product assignCategory(AssignCategoryRequest request);
     PageResponse getAllProduct(String gender, String wireMaterial
             , String shape, String waterProof, String sortBy, String color
-            , String q
+            , String q, String type
             , double minPrice, double maxPrice, int pageNum);
 
     PageResponse getAllProductAdmin(String gender, String wireMaterial
             , String shape, String waterProof, String sortBy, String color
-            , String q
+            , String q, String type
             , double minPrice, double maxPrice, int pageNum);
 
     List<ProductResponse> getProductsByCategory(ObjectId idCategory);

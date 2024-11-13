@@ -95,6 +95,9 @@ public class CouponServiceImpl implements CouponService {
     @Override
     public List<CouponResponse> getAllCoupons() {
         try {
+
+            List<Coupon> coupons = this.couponRepository.findAll();
+
             return this.couponRepository.findAll()
                     .stream()
 //                    .filter(coupon -> coupon.getExpiryDate().after(new Date()) && coupon.getState().equals("active"))

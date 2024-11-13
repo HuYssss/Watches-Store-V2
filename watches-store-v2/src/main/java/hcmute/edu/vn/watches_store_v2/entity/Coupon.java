@@ -23,6 +23,8 @@ public class Coupon {
 
     private String img;
 
+    private String imageType;
+
     private String couponCode;
 
     private String description;
