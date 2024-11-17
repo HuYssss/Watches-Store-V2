@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xác minh email</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+<div style="background: linear-gradient(to right, #4CAF50, #45a049); padding: 20px; text-align: center;">
+    <h1 style="color: white; margin: 0;">Xác minh email</h1>
+</div>
+<div style="background-color: #f9f9f9; padding: 20px; border-radius: 0 0 5px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+    <b><i>Xin chào <b th:text="${username}"></b>,</i></b>
+    <p>Cảm ơn bạn đã tin tưởng và sử dụng Watches Store Website. Dưới đây là mã để xác thực email của bạn</p>
+    <div style="text-align: center; margin: 30px 0;">
+        <span style="font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #4CAF50;"><b th:text="${verificationCode}"></b></span>
+    </div>
+    <p>Vui lòng nhập mã này vào trang xác minh để hoàn tất quá trình đăng ký của quý khách.</p>
+    <p>Mã xác thực sẽ hết hạn trong vòng <b>15 phút</b> để bảo mật tài khoản cảu bạn.</p>
+    <p>Nếu bạn không thực hiện đăng ký vui lòng bỏ qua email này</p>
+    <br><b>Trân trọng<br>Watches Store Website,<br>Khoa Công Nghệ Thông Tin,<br>Trường Đại Học Sư Phạm Kỹ Thuật Thành Phố Hồ Chí Minh</b>
+</div>
+<div style="text-align: center; margin-top: 20px; color: #888; font-size: 0.8em;">
+    <p>Đây là email tự động, vui lòng không trả lời thư này. Xin cảm ơn !</p>
+</div>
+</body>
+</html>
