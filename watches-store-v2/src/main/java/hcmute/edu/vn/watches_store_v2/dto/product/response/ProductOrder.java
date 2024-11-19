@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductResponse {
+public class ProductOrder {
     private String id;
 
     private String productName;
@@ -43,7 +43,7 @@ public class ProductResponse {
 
     private String description;
 
-    private List<Option> option;
+    private Option option;
 
     private String category;
 
@@ -54,6 +54,6 @@ public class ProductResponse {
     private String stateProduct;
 
     public double getPriceSafely() {
-        return this.option.getFirst().getValue().getPrice();
+        return this.option.getValue().getPrice();
     }
 }

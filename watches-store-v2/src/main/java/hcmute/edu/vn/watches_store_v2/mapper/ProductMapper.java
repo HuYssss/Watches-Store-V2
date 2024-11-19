@@ -1,9 +1,14 @@
 package hcmute.edu.vn.watches_store_v2.mapper;
 
+import hcmute.edu.vn.watches_store_v2.dto.orderLine.response.OrderLineResponse;
+import hcmute.edu.vn.watches_store_v2.dto.product.Option;
 import hcmute.edu.vn.watches_store_v2.dto.product.request.ProductRequest;
+import hcmute.edu.vn.watches_store_v2.dto.product.response.ProductOrder;
 import hcmute.edu.vn.watches_store_v2.dto.product.response.ProductResponse;
 import hcmute.edu.vn.watches_store_v2.entity.Product;
 import org.bson.types.ObjectId;
+
+import java.util.List;
 
 public class ProductMapper {
     public static ProductResponse mapProductResp(Product product) {
@@ -28,7 +33,7 @@ public class ProductMapper {
                 product.getCategory().toHexString(),
                 product.getWaterproof(),
                 product.getType(),
-                product.getState()
+                product.getStateProduct()
         );
     }
 
@@ -56,7 +61,37 @@ public class ProductMapper {
                         : new ObjectId(productRequest.getCategory()),
                 productRequest.getWaterproof(),
                 productRequest.getType(),
-                productRequest.getState()
+                productRequest.getStateProduct()
         );
+    }
+
+    public static ProductOrder mapProductOrder(OrderLineResponse orderLineResponse) {
+        return new ProductOrder(
+                orderLineResponse.getProduct().getId(),
+                orderLineResponse.getProduct().getProductName(),
+                orderLineResponse.getProduct().getImg(),
+                orderLineResponse.getProduct().getBrand(),
+                orderLineResponse.getProduct().getOrigin(),
+                orderLineResponse.getProduct().getWireMaterial(),
+                orderLineResponse.getProduct().getShellMaterial(),
+                orderLineResponse.getProduct().getStyle(),
+                orderLineResponse.getProduct().getFeature(),
+                orderLineResponse.getProduct().getShape(),
+                orderLineResponse.getProduct().getWeight(),
+                orderLineResponse.getProduct().getLength(),
+                orderLineResponse.getProduct().getWidth(),
+                orderLineResponse.getProduct().getHeight(),
+                orderLineResponse.getProduct().getGenderUser(),
+                orderLineResponse.getProduct().getDescription(),
+                getOption(orderLineResponse.getProduct().getOption(), orderLineResponse.getOption()),
+                orderLineResponse.getProduct().getCategory(),
+                orderLineResponse.getProduct().getWaterproof(),
+                orderLineResponse.getProduct().getType(),
+                orderLineResponse.getProduct().getStateProduct()
+        );
+    }
+
+    public static Option getOption(List<Option> options, String key) {
+        return options.stream().filter(option -> option.getKey().equals(key)).findFirst().orElse(null);
     }
 }

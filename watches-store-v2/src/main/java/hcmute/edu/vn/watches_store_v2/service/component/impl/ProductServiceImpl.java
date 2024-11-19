@@ -60,12 +60,31 @@ public class ProductServiceImpl implements ProductService {
     public Product saveProduct(Product product) {
 
         try {
+
+            for (Option o : product.getOption()) {
+                o.getValue().setState("selling");
+            }
+
             this.productRepository.save(product);
             return product;
         } catch (MongoException e) {
             e.printStackTrace();
             throw new MongoException("Can't save product");
         }
+    }
+
+    @Override
+    public Product pauseProduct(ObjectId id) {
+        Product product = this.productRepository.findById(id).orElse(null);
+
+        if (product == null) {
+            return null;
+        }
+
+        product.setStateProduct("paused");
+        this.productRepository.save(product);
+
+        return product;
     }
 
     @Override
@@ -76,7 +95,7 @@ public class ProductServiceImpl implements ProductService {
                 return null;
             }
 
-            currentProduct.setState("deleted");
+            currentProduct.setStateProduct("deleted");
             this.productRepository.save(currentProduct);
 
             return currentProduct;
@@ -115,7 +134,43 @@ public class ProductServiceImpl implements ProductService {
 
         if (product == null)        return null;
 
-        if (product.getState().equals("waiting"))       product.setState("saling");
+        product.setStateProduct("selling");
+
+        this.productRepository.save(product);
+
+        return product;
+    }
+
+    @Override
+    public Product pauseOption(ObjectId productId, String key) {
+        Product product = this.productRepository.findById(productId).orElse(null);
+
+        if (product == null)
+            return null;
+
+        for (Option o : product.getOption()) {
+            if (o.getKey().equals(key)) {
+                o.getValue().setState("paused");
+            }
+        }
+
+        this.productRepository.save(product);
+
+        return product;
+    }
+
+    @Override
+    public Product sellingOption(ObjectId productId, String key) {
+        Product product = this.productRepository.findById(productId).orElse(null);
+
+        if (product == null)
+            return null;
+
+        for (Option o : product.getOption()) {
+            if (o.getKey().equals(key)) {
+                o.getValue().setState("selling");
+            }
+        }
 
         this.productRepository.save(product);
 
@@ -161,7 +216,7 @@ public class ProductServiceImpl implements ProductService {
                         Arrays.stream(type.split(","))
                                 .map(String::trim)
                                 .anyMatch(wm -> product.getType().toLowerCase(new Locale("vi", "VN")).contains(wm.toLowerCase(new Locale("vi", "VN")))))
-                .filter(product -> !product.getState().equals("deleted"))
+                .filter(product -> !product.getStateProduct().equals("deleted"))
                 .collect(Collectors.toList());
 
         if (!sortBy.equals("none")) {

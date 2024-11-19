@@ -64,7 +64,7 @@ public class ManageProductController extends ControllerBase {
     @PreAuthorize("hasAuthority('SCOPE_ACCESS_FULL_SYSTEM')")
     @PostMapping("/create")
     public ResponseEntity<?> createProduct(@RequestBody ProductRequest product) {
-        if (product.getState() == null)         product.setState("waiting");
+        if (product.getStateProduct() == null)         product.setStateProduct("selling");
         return response(this.productService.saveProduct(ProductMapper.mapProduct(product)), HttpStatus.CREATED);
     }
 
@@ -104,17 +104,61 @@ public class ManageProductController extends ControllerBase {
         if (product == null)
             return response(null, HttpStatus.NOT_FOUND);
 
-        return response(null, HttpStatus.OK);
+        return response(ProductMapper.mapProductResp(product), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAuthority('SCOPE_ACCESS_FULL_SYSTEM')")
-    @DeleteMapping("/saling-product")
-    public ResponseEntity<?> deleteAllProduct(@RequestParam ObjectId productId) {
+    @DeleteMapping("/selling-product")
+    public ResponseEntity<?> sellingProduct(@RequestParam ObjectId productId) {
         Product product = this.productService.salingProduct(productId);
 
         if (product == null)
             return response(null, HttpStatus.NOT_FOUND);
 
-        return response(null, HttpStatus.OK);
+        return response(ProductMapper.mapProductResp(product), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('SCOPE_ACCESS_FULL_SYSTEM')")
+    @PutMapping("/pause-product")
+    public ResponseEntity<?> pauseProduct(@RequestParam ObjectId productId) {
+        Product product = this.productService.pauseProduct(productId);
+
+        if (product == null)
+            return response(null, HttpStatus.NOT_FOUND);
+
+        return response(ProductMapper.mapProductResp(product), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('SCOPE_ACCESS_FULL_SYSTEM')")
+    @PutMapping("/pause-option")
+    public ResponseEntity<?> pauseOptionProduct(@RequestParam ObjectId productId,
+                                                @RequestParam(defaultValue = "none") String key) {
+
+        if (key.equals("none"))
+            return response("Key option cannot be null", HttpStatus.BAD_REQUEST);
+
+        Product product = this.productService.pauseOption(productId, key);
+
+        if (product == null) {
+            return response("Product not found", HttpStatus.NOT_FOUND);
+        }
+
+        return response(ProductMapper.mapProductResp(product), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('SCOPE_ACCESS_FULL_SYSTEM')")
+    @PutMapping("/selling-option")
+    public ResponseEntity<?> sellingOption(@RequestParam ObjectId productId,
+                                           @RequestParam(defaultValue = "none") String key) {
+        if (key.equals("none"))
+            return response("Key option cannot be null", HttpStatus.BAD_REQUEST);
+
+        Product product = this.productService.sellingOption(productId, key);
+
+        if (product == null) {
+            return response("Product not found", HttpStatus.NOT_FOUND);
+        }
+
+        return response(ProductMapper.mapProductResp(product), HttpStatus.OK);
     }
 }

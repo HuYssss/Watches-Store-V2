@@ -6,6 +6,7 @@ import hcmute.edu.vn.watches_store_v2.dto.order.request.BuyNowRequest;
 import hcmute.edu.vn.watches_store_v2.dto.order.request.OrderRequest;
 import hcmute.edu.vn.watches_store_v2.dto.order.response.OrderResponse;
 import hcmute.edu.vn.watches_store_v2.dto.order.response.OrderSuccessResponse;
+import hcmute.edu.vn.watches_store_v2.dto.orderLine.OrderLineDetail;
 import hcmute.edu.vn.watches_store_v2.dto.product.Option;
 import hcmute.edu.vn.watches_store_v2.dto.product.response.ProductResponse;
 import hcmute.edu.vn.watches_store_v2.dto.orderLine.response.OrderLineResponse;
@@ -69,7 +70,7 @@ public class OrderServiceImpl implements OrderService {
 
             order.setUserId(userId);
 
-            order.setItemsPrice(calculateItemPrice(itemResp));
+            order.setItemsPrice(calculateItemPrice(order.getProducts()));
 
             double totalPrice = calculateTotalPrice(coupon, order);
 
@@ -231,17 +232,11 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-    private double calculateItemPrice(List<OrderLineResponse> itemResp) {
+    private double calculateItemPrice(List<OrderLineDetail> item) {
         double price = 0;
 
-        for (OrderLineResponse orderLineResponse : itemResp) {
-
-            for (Option option : orderLineResponse.getProduct().getOption()) {
-                if (option.getKey().equals(orderLineResponse.getOption())) {
-                    price += (option.getValue().getPrice() - option.getValue().getDiscount()) * orderLineResponse.getQuantity();
-                }
-            };
-
+        for (OrderLineDetail i : item) {
+                price += (i.getProduct().getOption().getValue().getPrice() - i.getProduct().getOption().getValue().getDiscount()) * i.getQuantity();
         }
 
         return price;

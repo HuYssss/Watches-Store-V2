@@ -50,5 +50,5 @@ public class ProductRequest {
 
     private String type;
 
-    private String state;
+    private String stateProduct;
 }

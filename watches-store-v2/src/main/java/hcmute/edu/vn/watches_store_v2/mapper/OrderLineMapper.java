@@ -1,5 +1,6 @@
 package hcmute.edu.vn.watches_store_v2.mapper;
 
+import hcmute.edu.vn.watches_store_v2.dto.orderLine.OrderLineDetail;
 import hcmute.edu.vn.watches_store_v2.dto.product.response.ProductResponse;
 import hcmute.edu.vn.watches_store_v2.dto.orderLine.request.OrderLineRequest;
 import hcmute.edu.vn.watches_store_v2.dto.orderLine.request.OrderLineUpdateRequest;
@@ -58,6 +59,14 @@ public class OrderLineMapper {
                 productResponse,
                 quantity,
                 option
+        );
+    }
+
+    public static OrderLineDetail mapOrderLineDetail(OrderLineResponse orderLineResponse) {
+        return new OrderLineDetail(
+                orderLineResponse.getId(),
+                ProductMapper.mapProductOrder(orderLineResponse),
+                orderLineResponse.getQuantity()
         );
     }
 }

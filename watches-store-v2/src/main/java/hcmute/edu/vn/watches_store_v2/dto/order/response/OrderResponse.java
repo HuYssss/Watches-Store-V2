@@ -2,6 +2,7 @@ package hcmute.edu.vn.watches_store_v2.dto.order.response;
 
 
 import hcmute.edu.vn.watches_store_v2.dto.coupon.response.CouponResponse;
+import hcmute.edu.vn.watches_store_v2.dto.orderLine.OrderLineDetail;
 import hcmute.edu.vn.watches_store_v2.dto.orderLine.response.OrderLineResponse;
 import hcmute.edu.vn.watches_store_v2.dto.user.response.ProfileOrder;
 import lombok.AllArgsConstructor;
@@ -17,7 +18,7 @@ import java.util.List;
 public class OrderResponse {
     private String id;
 
-    private List<OrderLineResponse> products;
+    private List<OrderLineDetail> products;
 
     private String paymentMethod;
 

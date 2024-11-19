@@ -1,6 +1,7 @@
 package hcmute.edu.vn.watches_store_v2.entity;
 
 import hcmute.edu.vn.watches_store_v2.dto.coupon.response.CouponResponse;
+import hcmute.edu.vn.watches_store_v2.dto.orderLine.OrderLineDetail;
 import hcmute.edu.vn.watches_store_v2.dto.orderLine.response.OrderLineResponse;
 import hcmute.edu.vn.watches_store_v2.dto.user.response.ProfileOrder;
 import lombok.AllArgsConstructor;
@@ -21,7 +22,7 @@ public class Order {
     @Id
     private ObjectId id;
 
-    private List<OrderLineResponse> products;
+    private List<OrderLineDetail> products;
 
     private String paymentMethod;
 

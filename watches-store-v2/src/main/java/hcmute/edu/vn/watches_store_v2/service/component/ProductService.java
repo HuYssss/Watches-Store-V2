@@ -12,9 +12,12 @@ public interface ProductService {
     List<ProductResponse> getAllProductResp();
     ProductResponse getProductById(ObjectId id);
     Product saveProduct(Product product);
+    Product pauseProduct(ObjectId id);
     Product deleteProduct(ObjectId product);
     Product assignCategory(AssignCategoryRequest request);
     Product salingProduct(ObjectId productId);
+    Product pauseOption(ObjectId productId, String key);
+    Product sellingOption(ObjectId productId, String key);
     PageResponse getAllProduct(String gender, String wireMaterial
             , String shape, String waterProof, String sortBy, String color
             , String q, String type

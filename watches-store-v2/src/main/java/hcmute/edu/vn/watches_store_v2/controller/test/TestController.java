@@ -26,38 +26,16 @@ import java.util.List;
 public class TestController extends ControllerBase {
 
     private final ProductRepository productRepository;
-    private final OrderRepository orderRepository;
-    private final MailService mailService;
+    @GetMapping("/update-state-product")
+    public ResponseEntity<?> updateStateProduct() {
+        List<Product> products = productRepository.findAll();
+        for (Product product : products) {
+            product.setStateProduct("selling");
+        }
 
-    @GetMapping("/product")
-    public ResponseEntity<?> getAllProducts() {
-        return response(
-                this.productRepository.findAll(),
-                HttpStatus.OK
-        );
+        productRepository.saveAll(products);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/order-success")
-    public ResponseEntity<?> getOrderSuccess(@RequestParam String id) {
 
-        Order order = this.orderRepository.findById(new ObjectId(id)).orElse(null);
-
-        this.mailService.orderSuccess(order);
-
-        return response(null, HttpStatus.OK);
-    }
-
-    @GetMapping("/trim-product")
-    public ResponseEntity<?> getTrimProduct() {
-        List<Product> products = this.productRepository.findAll();
-
-        products.forEach(product -> {
-            product.setWireMaterial(product.getWireMaterial().trim());
-            product.setShape(product.getShape().trim());
-        });
-
-        this.productRepository.saveAll(products);
-
-        return response(null, HttpStatus.OK);
-    }
 }

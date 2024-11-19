@@ -56,5 +56,5 @@ public class Product {
 
     private String type;
 
-    private String state;
+    private String stateProduct;
 }
