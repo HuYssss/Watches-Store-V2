@@ -25,17 +25,4 @@ import java.util.List;
 @Slf4j
 public class TestController extends ControllerBase {
 
-    private final ProductRepository productRepository;
-    @GetMapping("/update-state-product")
-    public ResponseEntity<?> updateStateProduct() {
-        List<Product> products = productRepository.findAll();
-        for (Product product : products) {
-            product.setStateProduct("selling");
-        }
-
-        productRepository.saveAll(products);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-
 }

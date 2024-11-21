@@ -4,10 +4,13 @@ import com.mongodb.MongoException;
 import hcmute.edu.vn.watches_store_v2.dto.orderLine.request.OrderLineRequest;
 import hcmute.edu.vn.watches_store_v2.dto.orderLine.request.OrderLineUpdateRequest;
 import hcmute.edu.vn.watches_store_v2.dto.orderLine.response.OrderLineResponse;
+import hcmute.edu.vn.watches_store_v2.dto.product.response.ProductResponse;
 import hcmute.edu.vn.watches_store_v2.entity.OrderLine;
+import hcmute.edu.vn.watches_store_v2.entity.Product;
 import hcmute.edu.vn.watches_store_v2.mapper.OrderLineMapper;
 import hcmute.edu.vn.watches_store_v2.service.business.CartService;
 import hcmute.edu.vn.watches_store_v2.service.component.OrderLineService;
+import hcmute.edu.vn.watches_store_v2.service.component.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,7 @@ import java.util.stream.Collectors;
 public class CartServiceImpl implements CartService {
 
     private final OrderLineService orderLineService;
+    private final ProductService productService;
 
     @Override
     public List<OrderLineResponse> getCart(ObjectId userId) {
@@ -50,15 +54,21 @@ public class CartServiceImpl implements CartService {
                     .findFirst()
                     .orElse(null);
 
+            ProductResponse productResponse = this.productService.getProductById(orderLineRequest.getProduct());
+
             if (item != null) {
                 item.setQuantity(item.getQuantity() + orderLineRequest.getQuantity());
                 this.orderLineService.saveOrderLine(item);
-                return OrderLineMapper.mapOrderLineResp(item);
+                OrderLineResponse resp = OrderLineMapper.mapOrderLineResp(item);
+                resp.setProduct(productResponse);
+                return resp;
             } else {
                 OrderLine orderLine = OrderLineMapper.mapOrderLineFromRequest(orderLineRequest);
                 orderLine.setUser(userId);
                 this.orderLineService.saveOrderLine(orderLine);
-                return OrderLineMapper.mapOrderLineResp(orderLine);
+                OrderLineResponse resp = OrderLineMapper.mapOrderLineResp(orderLine);
+                resp.setProduct(productResponse);
+                return resp;
             }
         } catch (MongoException e) {
             e.printStackTrace();
@@ -97,6 +107,7 @@ public class CartServiceImpl implements CartService {
                 for (OrderLine p2 : requestItem) {
                     if (p1.getId().equals(p2.getId())) {
                         found = true;
+                        p1.setOption(p2.getOption());
                         p1.setQuantity(p2.getQuantity());
                         break;
                     }
