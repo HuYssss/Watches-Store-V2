@@ -4,7 +4,9 @@ import com.mongodb.MongoException;
 import hcmute.edu.vn.watches_store_v2.base.ControllerBase;
 import hcmute.edu.vn.watches_store_v2.dto.orderLine.request.OrderLineRequest;
 import hcmute.edu.vn.watches_store_v2.dto.orderLine.request.OrderLineUpdateRequest;
+import hcmute.edu.vn.watches_store_v2.entity.OrderLine;
 import hcmute.edu.vn.watches_store_v2.service.business.CartService;
+import hcmute.edu.vn.watches_store_v2.service.component.OrderLineService;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
@@ -19,6 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CartController extends ControllerBase {
     private final CartService cartService;
+    private final OrderLineService orderLineService;
 
     @GetMapping("/get-cart-user")
     public ResponseEntity<?> getCartUser(Principal principal) {
@@ -60,5 +63,16 @@ public class CartController extends ControllerBase {
         } catch (MongoException e) {
             return response(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @PutMapping("/update-orderLine")
+    public ResponseEntity<?> updateOrderLine(@RequestBody OrderLineUpdateRequest orderLineRequest, Principal principal) {
+        OrderLine orderLine = this.orderLineService.update(orderLineRequest);
+
+        if (orderLine == null) {
+            return response(null, HttpStatus.NOT_FOUND);
+        }
+
+        return response(orderLine, HttpStatus.OK);
     }
 }

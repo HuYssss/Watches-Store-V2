@@ -1,6 +1,7 @@
 package hcmute.edu.vn.watches_store_v2.service.component.impl;
 
 import com.mongodb.MongoException;
+import hcmute.edu.vn.watches_store_v2.dto.orderLine.request.OrderLineUpdateRequest;
 import hcmute.edu.vn.watches_store_v2.dto.product.response.ProductResponse;
 import hcmute.edu.vn.watches_store_v2.dto.orderLine.response.OrderLineResponse;
 import hcmute.edu.vn.watches_store_v2.entity.OrderLine;
@@ -76,6 +77,26 @@ public class OrderLineServiceImpl implements OrderLineService {
         } catch (MongoException e) {
             e.printStackTrace();
             throw new MongoException("Can't save user's item");
+        }
+    }
+
+    @Override
+    public OrderLine update(OrderLineUpdateRequest orderLineUpdateRequest) {
+        try {
+            OrderLine orderLine = this.findItemById(orderLineUpdateRequest.getItemId());
+
+            if (orderLine == null) { return null; }
+
+            orderLine.setOption(orderLineUpdateRequest.getOption());
+            orderLine.setQuantity(orderLineUpdateRequest.getQuantity());
+
+            this.orderLineRepository.save(orderLine);
+
+            return orderLine;
+
+        } catch (MongoException e) {
+            e.printStackTrace();
+            throw new MongoException("Can't update user's item");
         }
     }
 
