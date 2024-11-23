@@ -13,4 +13,6 @@ public interface CartService {
     OrderLineResponse addProductToCart(ObjectId userId, OrderLineRequest orderLineRequest);
     OrderLine deleteProductFromCart(ObjectId userId, ObjectId itemId);
     List<OrderLine> updateCart(ObjectId userId, List<OrderLineUpdateRequest> itemUpdates);
+    OrderLine deleteItemFromCart(ObjectId userId, ObjectId itemId);
+    OrderLine deleteAllItemsFromCart(ObjectId userId);
 }

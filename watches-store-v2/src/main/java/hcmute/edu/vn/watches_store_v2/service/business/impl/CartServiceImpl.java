@@ -8,6 +8,7 @@ import hcmute.edu.vn.watches_store_v2.dto.product.response.ProductResponse;
 import hcmute.edu.vn.watches_store_v2.entity.OrderLine;
 import hcmute.edu.vn.watches_store_v2.entity.Product;
 import hcmute.edu.vn.watches_store_v2.mapper.OrderLineMapper;
+import hcmute.edu.vn.watches_store_v2.repository.OrderLineRepository;
 import hcmute.edu.vn.watches_store_v2.service.business.CartService;
 import hcmute.edu.vn.watches_store_v2.service.component.OrderLineService;
 import hcmute.edu.vn.watches_store_v2.service.component.ProductService;
@@ -25,6 +26,7 @@ public class CartServiceImpl implements CartService {
 
     private final OrderLineService orderLineService;
     private final ProductService productService;
+    private final OrderLineRepository orderLineRepository;
 
     @Override
     public List<OrderLineResponse> getCart(ObjectId userId) {
@@ -128,5 +130,25 @@ public class CartServiceImpl implements CartService {
         }
     }
 
+    @Override
+    public OrderLine deleteItemFromCart(ObjectId userId, ObjectId itemId) {
+        OrderLine orderLine = this.orderLineService.findItemById(itemId);
+
+        if (orderLine == null)
+            return null;
+
+        this.orderLineService.deleteOrderLine(orderLine.getId());
+
+        return orderLine;
+    }
+
+    @Override
+    public OrderLine deleteAllItemsFromCart(ObjectId userId) {
+        List<OrderLine> orderLineList = this.orderLineService.findAllUserItem(userId);
+
+        this.orderLineRepository.deleteAll(orderLineList);
+
+        return orderLineList.get(0);
+    }
 
 }

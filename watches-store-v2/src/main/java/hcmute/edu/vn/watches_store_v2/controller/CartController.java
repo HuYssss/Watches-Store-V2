@@ -54,16 +54,16 @@ public class CartController extends ControllerBase {
         }
     }
 
-    @DeleteMapping("/remove-item/{id}")
-    public ResponseEntity<?> removeItem(@PathVariable ObjectId id, Principal principal) {
-        try {
-            return response(
-                    this.cartService.deleteProductFromCart(findIdByUsername(principal.getName()), id)
-                    , HttpStatus.OK);
-        } catch (MongoException e) {
-            return response(e, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+//    @DeleteMapping("/remove-item/{id}")
+//    public ResponseEntity<?> removeItem(@PathVariable ObjectId id, Principal principal) {
+//        try {
+//            return response(
+//                    this.cartService.deleteProductFromCart(findIdByUsername(principal.getName()), id)
+//                    , HttpStatus.OK);
+//        } catch (MongoException e) {
+//            return response(e, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 
     @PutMapping("/update-orderLine")
     public ResponseEntity<?> updateOrderLine(@RequestBody OrderLineUpdateRequest orderLineRequest, Principal principal) {
@@ -72,6 +72,27 @@ public class CartController extends ControllerBase {
         if (orderLine == null) {
             return response(null, HttpStatus.NOT_FOUND);
         }
+
+        return response(orderLine, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete-item")
+    public ResponseEntity<?> deleteItem(@RequestParam ObjectId id, Principal principal) {
+        OrderLine orderLine = this.cartService.deleteItemFromCart(findIdByUsername(principal.getName()), id);
+
+        if (orderLine == null) {
+            return response(null, HttpStatus.NOT_FOUND);
+        }
+
+        return response(orderLine, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete-all")
+    public ResponseEntity<?> deleteAllItems(Principal principal) {
+        OrderLine orderLine = this.cartService.deleteAllItemsFromCart(findIdByUsername(principal.getName()));
+
+        if (orderLine == null)
+            return response(null, HttpStatus.NOT_FOUND);
 
         return response(orderLine, HttpStatus.OK);
     }
