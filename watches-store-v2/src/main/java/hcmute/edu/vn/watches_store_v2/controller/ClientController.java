@@ -5,9 +5,11 @@ import hcmute.edu.vn.watches_store_v2.base.ControllerBase;
 import hcmute.edu.vn.watches_store_v2.dto.product.request.IdProductRequest;
 import hcmute.edu.vn.watches_store_v2.dto.product.response.ProductResponse;
 import hcmute.edu.vn.watches_store_v2.entity.Product;
+import hcmute.edu.vn.watches_store_v2.mapper.ReviewMapper;
 import hcmute.edu.vn.watches_store_v2.service.component.CategoryService;
 import hcmute.edu.vn.watches_store_v2.service.component.CouponService;
 import hcmute.edu.vn.watches_store_v2.service.component.ProductService;
+import hcmute.edu.vn.watches_store_v2.service.component.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("client")
@@ -25,6 +28,7 @@ public class ClientController extends ControllerBase {
     private final CategoryService categoryService;
     private final ProductService productService;
     private final CouponService couponService;
+    private final ReviewService reviewService;
 
     @GetMapping("get-all-category")
     public ResponseEntity<?> getAllCategory() {
@@ -104,6 +108,19 @@ public class ClientController extends ControllerBase {
             }
 
             return response(products, HttpStatus.OK);
+        } catch (MongoException e) {
+            return response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/get-reviews-by-prroduct")
+    public ResponseEntity<?> getReviewsByProductId(@RequestParam ObjectId productId) {
+        try {
+            return response(this.reviewService.getReviewsByProduct(productId)
+                            .stream()
+                            .map(ReviewMapper::mapReviewResponse)
+                            .collect(Collectors.toList())
+                    , HttpStatus.OK);
         } catch (MongoException e) {
             return response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
