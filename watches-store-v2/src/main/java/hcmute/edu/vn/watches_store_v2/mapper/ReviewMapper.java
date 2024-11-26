@@ -16,6 +16,7 @@ public class ReviewMapper {
                 reviewRequest.getReviewImages(),
                 new Date(),
                 null,
+                null,
                 reviewRequest.getProductId()
         );
     }
@@ -27,6 +28,7 @@ public class ReviewMapper {
                 review.getReviewText(),
                 review.getReviewImages(),
                 review.getCreatedAt(),
+                review.getUserId().toHexString(),
                 review.getUser(),
                 review.getProductId().toHexString()
         );

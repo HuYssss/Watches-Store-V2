@@ -15,11 +15,21 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Review {
+
     private ObjectId id;
+
     private int rating;
+
     private String reviewText;
+
     private List<String> reviewImages;
+
     private Date createdAt;
+
+    private ObjectId userId;
+
     private ProfileOrder user;
+
     private ObjectId productId;
+
 }

@@ -1,6 +1,7 @@
 package hcmute.edu.vn.watches_store_v2.service.component.impl;
 
 import com.mongodb.MongoException;
+import hcmute.edu.vn.watches_store_v2.dto.review.request.UpdateReviewRequest;
 import hcmute.edu.vn.watches_store_v2.dto.user.response.ProfileOrder;
 import hcmute.edu.vn.watches_store_v2.entity.Review;
 import hcmute.edu.vn.watches_store_v2.entity.User;
@@ -27,8 +28,10 @@ public class ReviewServiceImpl implements ReviewService {
         try {
             User user = this.userRepository.findById(userId).orElse(null);
 
-            if (user != null)
+            if (user != null) {
                 review.setUser(UserMapper.mapProfileOrder(user));
+                review.setUserId(userId);
+            }
 
             this.reviewRepository.save(review);
             return review;
@@ -39,16 +42,18 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Review updateReview(Review review, ObjectId userId) {
+    public Review updateReview(UpdateReviewRequest review, ObjectId userId) {
         try {
-            Review review1 = this.reviewRepository.findById(review.getId()).orElse(null);
+            Review r = this.reviewRepository.findById(review.getId()).orElse(null);
 
-            if (review.getRating() != 0)      review1.setRating(review.getRating());
-            if (review.getReviewText() != null)      review1.setReviewText(review.getReviewText());
-            if (review.getReviewImages() != null)      review1.setReviewImages(review.getReviewImages());
+            if (r == null || !r.getUserId().equals(userId))          return null;
 
-            this.reviewRepository.save(review);
-            return review;
+            if (review.getRating() != 0)      r.setRating(review.getRating());
+            if (review.getReviewText() != null)      r.setReviewText(review.getReviewText());
+            if (review.getReviewImages() != null)      r.setReviewImages(review.getReviewImages());
+
+            this.reviewRepository.save(r);
+            return r;
         } catch (MongoException e) {
             e.printStackTrace();
             throw new MongoException("Can't update review");

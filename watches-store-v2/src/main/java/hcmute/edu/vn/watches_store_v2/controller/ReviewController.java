@@ -2,6 +2,7 @@ package hcmute.edu.vn.watches_store_v2.controller;
 
 import hcmute.edu.vn.watches_store_v2.base.ControllerBase;
 import hcmute.edu.vn.watches_store_v2.dto.review.request.ReviewRequest;
+import hcmute.edu.vn.watches_store_v2.dto.review.request.UpdateReviewRequest;
 import hcmute.edu.vn.watches_store_v2.entity.Review;
 import hcmute.edu.vn.watches_store_v2.mapper.ReviewMapper;
 import hcmute.edu.vn.watches_store_v2.service.component.ReviewService;
@@ -32,10 +33,15 @@ public class ReviewController extends ControllerBase {
         }
     }
 
-//    @PutMapping("/update-review")
-//    public ResponseEntity<?> updateReview(@RequestBody ReviewRequest reviewRequest, Principal principal) {
-//
-//    }
+    @PutMapping("/update-review")
+    public ResponseEntity<?> updateReview(@RequestBody UpdateReviewRequest review, Principal principal) {
+         try {
+             this.reviewService.updateReview(review, findIdByUsername(principal.getName()));
+             return response(review, HttpStatus.OK);
+         } catch (Exception e) {
+             return response(e, HttpStatus.INTERNAL_SERVER_ERROR);
+         }
+    }
 
     @DeleteMapping("/delete-review")
     public ResponseEntity<?> deleteReview(@RequestParam ObjectId reviewId, Principal principal) {

@@ -17,6 +17,7 @@ public class ReviewResponse {
     private String reviewText;
     private List<String> reviewImages;
     private Date createdAt;
-    private ProfileOrder userId;
+    private String userId;
+    private ProfileOrder user;
     private String productId;
 }
