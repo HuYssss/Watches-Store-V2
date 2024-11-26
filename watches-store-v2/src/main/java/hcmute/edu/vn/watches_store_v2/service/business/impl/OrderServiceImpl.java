@@ -3,6 +3,7 @@ package hcmute.edu.vn.watches_store_v2.service.business.impl;
 
 import com.mongodb.MongoException;
 import hcmute.edu.vn.watches_store_v2.dto.order.request.BuyNowRequest;
+import hcmute.edu.vn.watches_store_v2.dto.order.request.CancelOrder;
 import hcmute.edu.vn.watches_store_v2.dto.order.request.OrderRequest;
 import hcmute.edu.vn.watches_store_v2.dto.order.response.OrderResponse;
 import hcmute.edu.vn.watches_store_v2.dto.order.response.OrderSuccessResponse;
@@ -203,12 +204,18 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderResponse declineOrder(ObjectId orderId) {
-        Order order = this.orderRepository.findById(orderId).orElse(null);
+    public OrderResponse declineOrder(CancelOrder cancelOrder) {
+        Order order = this.orderRepository.findById(cancelOrder.getId()).orElse(null);
 
         if (order != null) {
             order.setState("cancel");
-            order.setCancelMessage("Admin decline");
+
+            if (cancelOrder.getMessage() != null) {
+                order.setCancelMessage(cancelOrder.getMessage());
+            }
+            else
+                order.setCancelMessage("Admin decline");
+            
             this.orderRepository.save(order);
         }
 

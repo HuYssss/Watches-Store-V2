@@ -1,6 +1,7 @@
 package hcmute.edu.vn.watches_store_v2.controller.admin;
 
 import hcmute.edu.vn.watches_store_v2.base.ControllerBase;
+import hcmute.edu.vn.watches_store_v2.dto.order.request.CancelOrder;
 import hcmute.edu.vn.watches_store_v2.dto.order.response.OrderResponse;
 import hcmute.edu.vn.watches_store_v2.service.business.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -46,8 +47,8 @@ public class ManageOrderController extends ControllerBase {
 
     @PreAuthorize("hasAuthority('SCOPE_ACCESS_FULL_SYSTEM')")
     @PutMapping("/decline-oder")
-    public ResponseEntity<?> declineOrder(@RequestParam ObjectId orderId) {
-        OrderResponse response = this.orderService.declineOrder(orderId);
+    public ResponseEntity<?> declineOrder(@RequestBody CancelOrder cancelOrder) {
+        OrderResponse response = this.orderService.declineOrder(cancelOrder);
 
         if (response != null) {
             return response(response, HttpStatus.OK);

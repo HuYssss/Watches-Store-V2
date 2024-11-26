@@ -1,6 +1,7 @@
 package hcmute.edu.vn.watches_store_v2.service.business;
 
 import hcmute.edu.vn.watches_store_v2.dto.order.request.BuyNowRequest;
+import hcmute.edu.vn.watches_store_v2.dto.order.request.CancelOrder;
 import hcmute.edu.vn.watches_store_v2.dto.order.request.OrderRequest;
 import hcmute.edu.vn.watches_store_v2.dto.order.response.OrderResponse;
 import hcmute.edu.vn.watches_store_v2.dto.order.response.OrderSuccessResponse;
@@ -20,7 +21,7 @@ public interface OrderService {
     OrderResponse isOrderDelivered(ObjectId orderId, ObjectId userId);
 
     OrderResponse approvalOrder(ObjectId orderId);
-    OrderResponse declineOrder(ObjectId orderId);
+    OrderResponse declineOrder(CancelOrder cancelOrder);
     List<OrderResponse> getAllOrders();
     OrderResponse getOrderById(ObjectId orderId);
 }

@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "User")
+@Document(collection = "Service")
 public class Service {
     private ObjectId id;
     private String name;
