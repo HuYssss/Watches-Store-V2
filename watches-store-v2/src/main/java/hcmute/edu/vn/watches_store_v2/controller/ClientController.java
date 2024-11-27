@@ -4,6 +4,7 @@ import com.mongodb.MongoException;
 import hcmute.edu.vn.watches_store_v2.base.ControllerBase;
 import hcmute.edu.vn.watches_store_v2.dto.product.request.IdProductRequest;
 import hcmute.edu.vn.watches_store_v2.dto.product.response.ProductResponse;
+import hcmute.edu.vn.watches_store_v2.dto.product.response.ProductReviewResponse;
 import hcmute.edu.vn.watches_store_v2.entity.Product;
 import hcmute.edu.vn.watches_store_v2.mapper.ReviewMapper;
 import hcmute.edu.vn.watches_store_v2.service.component.CategoryService;
@@ -85,13 +86,13 @@ public class ClientController extends ControllerBase {
     public ResponseEntity<?> getProductById(
             @RequestParam ObjectId productId) {
         try {
-            ProductResponse product = this.productService.getProductById(productId);
+            ProductReviewResponse response = this.productService.getProductReview(productId);
 
-            if (product == null) {
+            if (response == null) {
                 return response(null, HttpStatus.NOT_FOUND);
             }
 
-            return response(product, HttpStatus.OK);
+            return response(response, HttpStatus.OK);
         } catch (MongoException e) {
             return response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -113,7 +114,7 @@ public class ClientController extends ControllerBase {
         }
     }
 
-    @GetMapping("/get-reviews-by-prroduct")
+    @GetMapping("/get-reviews-by-product")
     public ResponseEntity<?> getReviewsByProductId(@RequestParam ObjectId productId) {
         try {
             return response(this.reviewService.getReviewsByProduct(productId)

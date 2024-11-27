@@ -88,4 +88,15 @@ public class OrderController extends ControllerBase {
             return response("Server Error !!!", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PostMapping("/is-ordered")
+    public ResponseEntity<?> isOrdered(@RequestParam ObjectId productId, Principal principal) {
+        try {
+            return response(this.orderService.isOrdered(productId, findIdByUsername(principal.getName())),
+                    HttpStatus.OK);
+        } catch (MongoException e) {
+            e.printStackTrace();
+            return response("Server Error !!!", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

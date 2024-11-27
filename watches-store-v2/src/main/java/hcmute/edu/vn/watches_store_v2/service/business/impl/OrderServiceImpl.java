@@ -8,7 +8,6 @@ import hcmute.edu.vn.watches_store_v2.dto.order.request.OrderRequest;
 import hcmute.edu.vn.watches_store_v2.dto.order.response.OrderResponse;
 import hcmute.edu.vn.watches_store_v2.dto.order.response.OrderSuccessResponse;
 import hcmute.edu.vn.watches_store_v2.dto.orderLine.OrderLineDetail;
-import hcmute.edu.vn.watches_store_v2.dto.product.Option;
 import hcmute.edu.vn.watches_store_v2.dto.product.response.ProductResponse;
 import hcmute.edu.vn.watches_store_v2.dto.orderLine.response.OrderLineResponse;
 import hcmute.edu.vn.watches_store_v2.dto.user.response.ProfileOrder;
@@ -30,6 +29,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 @Service
@@ -237,6 +237,24 @@ public class OrderServiceImpl implements OrderService {
             e.printStackTrace();
             throw new MongoException("Can't get order");
         }
+    }
+
+    @Override
+    public boolean isOrdered(ObjectId productId, ObjectId userId) {
+        boolean isOrdered = false;
+        List<Order> order = this.orderRepository.findAllByUserId(userId);
+
+        if (order == null || order.isEmpty())         return false;
+
+        for (Order orderItem : order) {
+            for (OrderLineDetail o : orderItem.getProducts()) {
+                if (o.getProduct().getId().equals(productId.toHexString())) {
+                    isOrdered = true;
+                }
+            }
+        }
+
+        return isOrdered;
     }
 
     private double calculateItemPrice(List<OrderLineDetail> item) {

@@ -1,6 +1,7 @@
 package hcmute.edu.vn.watches_store_v2.controller.test;
 
 import hcmute.edu.vn.watches_store_v2.base.ControllerBase;
+import hcmute.edu.vn.watches_store_v2.dto.product.Option;
 import hcmute.edu.vn.watches_store_v2.entity.Order;
 import hcmute.edu.vn.watches_store_v2.entity.Product;
 import hcmute.edu.vn.watches_store_v2.repository.OrderRepository;
@@ -25,4 +26,18 @@ import java.util.List;
 @Slf4j
 public class TestController extends ControllerBase {
 
+    private final ProductRepository productRepository;
+
+    @GetMapping("/update")
+    public ResponseEntity<String> update() {
+        List<Product> products = productRepository.findAll();
+        for (Product product : products) {
+            product.setStateProduct("selling");
+            for (Option option : product.getOption()) {
+                option.getValue().setState("selling");
+            }
+        }
+        productRepository.saveAll(products);
+        return new ResponseEntity<>("success", HttpStatus.OK);
+    }
 }

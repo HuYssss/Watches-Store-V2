@@ -5,6 +5,7 @@ import hcmute.edu.vn.watches_store_v2.dto.product.Option;
 import hcmute.edu.vn.watches_store_v2.dto.product.request.ProductRequest;
 import hcmute.edu.vn.watches_store_v2.dto.product.response.ProductOrder;
 import hcmute.edu.vn.watches_store_v2.dto.product.response.ProductResponse;
+import hcmute.edu.vn.watches_store_v2.dto.product.response.ProductReviewResponse;
 import hcmute.edu.vn.watches_store_v2.entity.Product;
 import org.bson.types.ObjectId;
 
@@ -93,5 +94,32 @@ public class ProductMapper {
 
     public static Option getOption(List<Option> options, String key) {
         return options.stream().filter(option -> option.getKey().equals(key)).findFirst().orElse(null);
+    }
+
+    public static ProductReviewResponse mapProductReview(Product product) {
+        return new ProductReviewResponse(
+                product.getId().toHexString(),
+                product.getProductName(),
+                product.getImg(),
+                product.getBrand(),
+                product.getOrigin(),
+                product.getWireMaterial(),
+                product.getShellMaterial(),
+                product.getStyle(),
+                product.getFeature(),
+                product.getShape(),
+                product.getWeight(),
+                product.getLength(),
+                product.getWidth(),
+                product.getHeight(),
+                product.getGenderUser(),
+                product.getDescription(),
+                product.getOption(),
+                product.getCategory().toHexString(),
+                product.getWaterproof(),
+                product.getType(),
+                product.getStateProduct(),
+                null
+        );
     }
 }

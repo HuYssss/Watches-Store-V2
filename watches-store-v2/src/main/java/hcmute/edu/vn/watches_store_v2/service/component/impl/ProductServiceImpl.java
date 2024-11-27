@@ -5,11 +5,15 @@ import hcmute.edu.vn.watches_store_v2.dto.category.request.AssignCategoryRequest
 import hcmute.edu.vn.watches_store_v2.dto.product.Option;
 import hcmute.edu.vn.watches_store_v2.dto.product.response.PageResponse;
 import hcmute.edu.vn.watches_store_v2.dto.product.response.ProductResponse;
+import hcmute.edu.vn.watches_store_v2.dto.product.response.ProductReviewResponse;
 import hcmute.edu.vn.watches_store_v2.entity.Category;
 import hcmute.edu.vn.watches_store_v2.entity.Product;
+import hcmute.edu.vn.watches_store_v2.entity.Review;
 import hcmute.edu.vn.watches_store_v2.mapper.ProductMapper;
+import hcmute.edu.vn.watches_store_v2.mapper.ReviewMapper;
 import hcmute.edu.vn.watches_store_v2.repository.CategoryRepository;
 import hcmute.edu.vn.watches_store_v2.repository.ProductRepository;
+import hcmute.edu.vn.watches_store_v2.repository.ReviewRepository;
 import hcmute.edu.vn.watches_store_v2.service.component.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
@@ -27,6 +31,7 @@ public class ProductServiceImpl implements ProductService {
     private static final Logger log = LoggerFactory.getLogger(ProductServiceImpl.class);
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final ReviewRepository reviewRepository;
 
     @Override
     public List<ProductResponse> getAllProductResp() {
@@ -450,5 +455,21 @@ public class ProductServiceImpl implements ProductService {
         this.productRepository.save(product);
 
         return ProductMapper.mapProductResp(product);
+    }
+
+    @Override
+    public ProductReviewResponse getProductReview(ObjectId idProduct) {
+        Product product = this.productRepository.findById(idProduct).orElse(null);
+        List<Review> reviews = this.reviewRepository.findByProductId(idProduct);
+
+        if (product == null || reviews == null)     return null;
+
+        ProductReviewResponse response = ProductMapper.mapProductReview(product);
+
+        response.setReviews(reviews.stream()
+                .map(ReviewMapper::mapReviewResponse)
+                .collect(Collectors.toList()));
+
+        return response;
     }
 }

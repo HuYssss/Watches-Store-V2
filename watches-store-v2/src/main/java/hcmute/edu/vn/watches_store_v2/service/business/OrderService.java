@@ -24,4 +24,6 @@ public interface OrderService {
     OrderResponse declineOrder(CancelOrder cancelOrder);
     List<OrderResponse> getAllOrders();
     OrderResponse getOrderById(ObjectId orderId);
+
+    boolean isOrdered(ObjectId productId, ObjectId userId);
 }
