@@ -292,7 +292,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public PageResponse getAllProductAdmin(String gender, String wireMaterial
             , String shape, String waterProof, String sortBy, String color
-            , String q, String type
+            , String q, String type, String state
             , double minPrice, double maxPrice, int pageNum) {
         log.info("[ProductServiceImpl] Starting all products");
 
@@ -329,7 +329,7 @@ public class ProductServiceImpl implements ProductService {
                         Arrays.stream(type.split(","))
                                 .map(String::trim)
                                 .anyMatch(wm -> product.getType().toLowerCase(new Locale("vi", "VN")).contains(wm.toLowerCase(new Locale("vi", "VN")))))
-
+                .filter(product -> state.equals("none") || product.getStateProduct().contains(state))
                 .collect(Collectors.toList());
 
         if (!sortBy.equals("none")) {

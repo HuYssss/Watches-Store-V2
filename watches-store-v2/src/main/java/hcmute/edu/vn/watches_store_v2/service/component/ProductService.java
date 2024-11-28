@@ -26,7 +26,7 @@ public interface ProductService {
 
     PageResponse getAllProductAdmin(String gender, String wireMaterial
             , String shape, String waterProof, String sortBy, String color
-            , String q, String type
+            , String q, String type, String state
             , double minPrice, double maxPrice, int pageNum);
 
     List<ProductResponse> getProductsByCategory(ObjectId idCategory);
