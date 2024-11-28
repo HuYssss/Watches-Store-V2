@@ -86,7 +86,22 @@ public class ProductServiceImpl implements ProductService {
             return null;
         }
 
-        product.setStateProduct("paused");
+        if (product.getStateProduct().contains("selling")) {
+            log.info("Product selling");
+            product.setStateProduct("pause");
+        } else if (product.getStateProduct().contains("pause")) {
+            log.info("Product pause");
+            product.setStateProduct("selling");
+        }
+
+        for (Option o : product.getOption()) {
+            if (product.getStateProduct().contains("selling")) {
+                o.getValue().setState("selling");
+            } else if (product.getStateProduct().contains("pause")) {
+                o.getValue().setState("pause");
+            }
+        }
+
         this.productRepository.save(product);
 
         return product;
@@ -101,6 +116,11 @@ public class ProductServiceImpl implements ProductService {
             }
 
             currentProduct.setStateProduct("deleted");
+
+            for (Option o : currentProduct.getOption()) {
+                o.getValue().setState("deleted");
+            }
+
             this.productRepository.save(currentProduct);
 
             return currentProduct;
@@ -155,7 +175,11 @@ public class ProductServiceImpl implements ProductService {
 
         for (Option o : product.getOption()) {
             if (o.getKey().equals(key)) {
-                o.getValue().setState("paused");
+                if (o.getValue().equals("selling")) {
+                    o.getValue().setState("pause");
+                } else if (o.getValue().equals(("pause"))) {
+                    o.getValue().setState("selling");
+                }
             }
         }
 

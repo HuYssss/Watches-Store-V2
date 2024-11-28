@@ -2,9 +2,11 @@ package hcmute.edu.vn.watches_store_v2.service.component.impl;
 
 import com.mongodb.MongoException;
 import hcmute.edu.vn.watches_store_v2.dto.auth.request.RegisterRequest;
+import hcmute.edu.vn.watches_store_v2.dto.order.response.OrderResponse;
 import hcmute.edu.vn.watches_store_v2.dto.user.response.ProfileResponse;
 import hcmute.edu.vn.watches_store_v2.entity.Order;
 import hcmute.edu.vn.watches_store_v2.entity.User;
+import hcmute.edu.vn.watches_store_v2.mapper.OrderMapper;
 import hcmute.edu.vn.watches_store_v2.mapper.UserMapper;
 import hcmute.edu.vn.watches_store_v2.repository.OrderRepository;
 import hcmute.edu.vn.watches_store_v2.repository.UserRepository;
@@ -70,11 +72,14 @@ public class UserServiceImpl implements UserService {
                     .map(UserMapper::convertProfileUser)
                     .collect(Collectors.toList());
 
-            List<Order> orders = this.orderRepository.findAll();
+            List<OrderResponse> orders = this.orderRepository.findAll()
+                    .stream()
+                    .map(OrderMapper::mapOrderResp)
+                    .collect(Collectors.toList());
 
             resp.forEach(r -> {
                 orders.forEach(o -> {
-                    if (o.getUserId().equals(new ObjectId(r.getId()))) {
+                    if (o.getUserId().equals(r.getId())) {
                         r.setOrder(o);
                     }
                 });

@@ -147,20 +147,4 @@ public class ManageProductController extends ControllerBase {
 
         return response(ProductMapper.mapProductResp(product), HttpStatus.OK);
     }
-
-    @PreAuthorize("hasAuthority('SCOPE_ACCESS_FULL_SYSTEM')")
-    @PutMapping("/selling-option")
-    public ResponseEntity<?> sellingOption(@RequestParam ObjectId productId,
-                                           @RequestParam(defaultValue = "none") String key) {
-        if (key.equals("none"))
-            return response("Key option cannot be null", HttpStatus.BAD_REQUEST);
-
-        Product product = this.productService.sellingOption(productId, key);
-
-        if (product == null) {
-            return response("Product not found", HttpStatus.NOT_FOUND);
-        }
-
-        return response(ProductMapper.mapProductResp(product), HttpStatus.OK);
-    }
 }

@@ -1,5 +1,6 @@
 package hcmute.edu.vn.watches_store_v2.dto.user.response;
 
+import hcmute.edu.vn.watches_store_v2.dto.order.response.OrderResponse;
 import hcmute.edu.vn.watches_store_v2.dto.user.Address;
 import hcmute.edu.vn.watches_store_v2.entity.Order;
 import lombok.AllArgsConstructor;
@@ -38,9 +39,9 @@ public class ProfileResponse {
 
     private boolean isAdmin;
 
-    private List<Order> orders = new ArrayList<>();
+    private List<OrderResponse> orders = new ArrayList<>();
 
-    public void setOrder(Order order) {
+    public void setOrder(OrderResponse order) {
         orders.add(order);
     }
 }
