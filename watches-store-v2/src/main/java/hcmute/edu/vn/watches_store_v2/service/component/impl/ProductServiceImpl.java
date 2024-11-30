@@ -486,6 +486,9 @@ public class ProductServiceImpl implements ProductService {
 
         if (product == null || reviews == null)     return null;
 
+        product.setAccess(product.getAccess() + 1);
+        this.productRepository.save(product);
+
         ProductReviewResponse response = ProductMapper.mapProductReview(product);
 
         response.setReviews(reviews.stream()

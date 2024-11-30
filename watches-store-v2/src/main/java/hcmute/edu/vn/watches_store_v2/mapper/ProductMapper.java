@@ -34,7 +34,8 @@ public class ProductMapper {
                 product.getCategory().toHexString(),
                 product.getWaterproof(),
                 product.getType(),
-                product.getStateProduct()
+                product.getStateProduct(),
+                product.getAccess()
         );
     }
 
@@ -62,7 +63,8 @@ public class ProductMapper {
                         : new ObjectId(productRequest.getCategory()),
                 productRequest.getWaterproof(),
                 productRequest.getType(),
-                productRequest.getStateProduct()
+                productRequest.getStateProduct(),
+                0
         );
     }
 
@@ -119,6 +121,7 @@ public class ProductMapper {
                 product.getWaterproof(),
                 product.getType(),
                 product.getStateProduct(),
+                product.getAccess(),
                 null
         );
     }

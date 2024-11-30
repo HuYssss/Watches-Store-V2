@@ -54,5 +54,7 @@ public class ProductReviewResponse {
 
     private String stateProduct;
 
+    private int access;
+
     private List<ReviewResponse> reviews;
 }
