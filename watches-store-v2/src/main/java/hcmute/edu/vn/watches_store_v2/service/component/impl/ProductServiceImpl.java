@@ -87,17 +87,13 @@ public class ProductServiceImpl implements ProductService {
         }
 
         if (product.getStateProduct().contains("selling")) {
-            log.info("Product selling");
             product.setStateProduct("pause");
         } else if (product.getStateProduct().contains("pause")) {
-            log.info("Product pause");
             product.setStateProduct("selling");
         }
 
         for (Option o : product.getOption()) {
-            if (product.getStateProduct().contains("selling")) {
-                o.getValue().setState("selling");
-            } else if (product.getStateProduct().contains("pause")) {
+             if (product.getStateProduct().contains("pause")) {
                 o.getValue().setState("pause");
             }
         }
@@ -175,13 +171,15 @@ public class ProductServiceImpl implements ProductService {
 
         for (Option o : product.getOption()) {
             if (o.getKey().equals(key)) {
-                if (o.getValue().equals("selling")) {
+                if (o.getValue().getState().equals("selling")) {
                     o.getValue().setState("pause");
-                } else if (o.getValue().equals(("pause"))) {
+                } else if (o.getValue().getState().equals(("pause"))) {
                     o.getValue().setState("selling");
                 }
             }
         }
+
+        product = checkStateProduct(product);
 
         this.productRepository.save(product);
 
@@ -495,5 +493,24 @@ public class ProductServiceImpl implements ProductService {
                 .collect(Collectors.toList()));
 
         return response;
+    }
+
+    public Product checkStateProduct(Product product)  {
+        int count = 0;
+
+        for (Option option : product.getOption()) {
+            if (option.getValue().getState().equals("pause")) {
+                count++;
+            } else if (option.getValue().getState().equals("selling")) {
+                product.setStateProduct("selling");
+                break;
+            }
+        }
+
+        if (count == product.getOption().size()) {
+            product.setStateProduct("pause");
+        }
+
+        return product;
     }
 }
