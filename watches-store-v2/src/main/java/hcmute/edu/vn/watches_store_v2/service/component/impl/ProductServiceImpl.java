@@ -493,6 +493,7 @@ public class ProductServiceImpl implements ProductService {
 
         response.setReviews(reviews.stream()
                 .map(ReviewMapper::mapReviewResponse)
+                .filter(r -> !r.isDelete())
                 .collect(Collectors.toList()));
 
         return response;

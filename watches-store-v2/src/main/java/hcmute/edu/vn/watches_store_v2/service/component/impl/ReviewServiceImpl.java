@@ -61,12 +61,18 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Review deleteReview(ObjectId id, ObjectId userId) {
+    public Review deleteReview(ObjectId id) {
         try {
             Review review = this.reviewRepository.findById(id).orElse(null);
 
-            this.reviewRepository.delete(review);
+            if (review == null)             return null;
+
+            review.setDelete(true);
+
+            this.reviewRepository.save(review);
+
             return review;
+
         } catch (MongoException e) {
             e.printStackTrace();
             throw new MongoException("Can't delete review");

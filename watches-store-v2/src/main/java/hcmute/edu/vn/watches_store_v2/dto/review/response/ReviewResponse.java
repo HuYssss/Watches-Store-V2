@@ -20,4 +20,5 @@ public class ReviewResponse {
     private String userId;
     private ProfileOrder user;
     private String productId;
+    private boolean isDelete;
 }

@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -44,9 +45,20 @@ public class ReviewController extends ControllerBase {
     }
 
     @DeleteMapping("/delete-review")
-    public ResponseEntity<?> deleteReview(@RequestParam ObjectId reviewId, Principal principal) {
+    public ResponseEntity<?> deleteReview(@RequestParam ObjectId reviewId) {
         try {
-            this.reviewService.deleteReview(reviewId, findIdByUsername(principal.getName()));
+            this.reviewService.deleteReview(reviewId);
+            return response(null, HttpStatus.OK);
+        } catch (Exception e) {
+            return response(e, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PreAuthorize("hasAuthority('SCOPE_ACCESS_FULL_SYSTEM')")
+    @DeleteMapping("/admin-delete")
+    public ResponseEntity<?> adminDelete(@RequestParam ObjectId reviewId) {
+        try {
+            this.reviewService.deleteReview(reviewId);
             return response(null, HttpStatus.OK);
         } catch (Exception e) {
             return response(e, HttpStatus.INTERNAL_SERVER_ERROR);

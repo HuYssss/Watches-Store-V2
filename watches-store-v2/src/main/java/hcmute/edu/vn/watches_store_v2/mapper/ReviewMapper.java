@@ -17,7 +17,8 @@ public class ReviewMapper {
                 new Date(),
                 null,
                 null,
-                reviewRequest.getProductId()
+                reviewRequest.getProductId(),
+                false
         );
     }
 
@@ -30,7 +31,8 @@ public class ReviewMapper {
                 review.getCreatedAt(),
                 review.getUserId().toHexString(),
                 review.getUser(),
-                review.getProductId().toHexString()
+                review.getProductId().toHexString(),
+                review.isDelete()
         );
     }
 }
