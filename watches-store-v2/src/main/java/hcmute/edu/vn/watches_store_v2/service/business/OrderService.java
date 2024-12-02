@@ -5,6 +5,7 @@ import hcmute.edu.vn.watches_store_v2.dto.order.request.CancelOrder;
 import hcmute.edu.vn.watches_store_v2.dto.order.request.OrderRequest;
 import hcmute.edu.vn.watches_store_v2.dto.order.response.OrderResponse;
 import hcmute.edu.vn.watches_store_v2.dto.order.response.OrderSuccessResponse;
+import hcmute.edu.vn.watches_store_v2.dto.order.response.Statistic;
 import hcmute.edu.vn.watches_store_v2.entity.Order;
 import org.bson.types.ObjectId;
 
@@ -12,7 +13,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 public interface OrderService {
-    List<OrderResponse> getAllUserOrders(ObjectId userId);
+    List<OrderResponse> getAllUserOrders(ObjectId userId, String state);
     OrderSuccessResponse createOrder(OrderRequest order, ObjectId userId);
     Order cancleOrder(ObjectId order, ObjectId userId, String message);
 
@@ -26,4 +27,5 @@ public interface OrderService {
     OrderResponse getOrderById(ObjectId orderId);
 
     boolean isOrdered(ObjectId productId, ObjectId userId);
+    Statistic statistic(ObjectId userId);
 }

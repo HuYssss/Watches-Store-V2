@@ -88,4 +88,14 @@ public class ReviewServiceImpl implements ReviewService {
             throw new MongoException("Can't delete review");
         }
     }
+
+    @Override
+    public List<Review> getAllReviews() {
+        try {
+            return this.reviewRepository.findAll();
+        } catch (MongoException e) {
+            e.printStackTrace();
+            throw new MongoException("Can't delete review");
+        }
+    }
 }

@@ -14,7 +14,8 @@ public class ServiceMapper {
                 service.getEmail(),
                 service.getMessage(),
                 service.getType(),
-                service.getImg()
+                service.getImg(),
+                service.getState()
         );
     }
 
@@ -26,7 +27,8 @@ public class ServiceMapper {
                 serviceRequest.getEmail(),
                 serviceRequest.getMessage(),
                 serviceRequest.getType(),
-                serviceRequest.getImg()
+                serviceRequest.getImg(),
+                "active"
         );
     }
 }

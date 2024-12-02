@@ -12,4 +12,5 @@ public interface ReviewService {
     Review updateReview(UpdateReviewRequest review, ObjectId userId);
     Review deleteReview(ObjectId reviewId);
     List<Review> getReviewsByProduct(ObjectId productId);
+    List<Review> getAllReviews();
 }

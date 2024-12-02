@@ -36,9 +36,9 @@ public class OrderController extends ControllerBase {
     }
 
     @GetMapping("")
-    public ResponseEntity<?> getAllOrder(Principal principal) {
+    public ResponseEntity<?> getAllOrder(@RequestParam(defaultValue = "none") String state, Principal principal) {
         try {
-            return response(this.orderService.getAllUserOrders(findIdByUsername(principal.getName()))
+            return response(this.orderService.getAllUserOrders(findIdByUsername(principal.getName()), state)
                     , HttpStatus.OK);
         } catch (MongoException e) {
             e.printStackTrace();
@@ -93,6 +93,17 @@ public class OrderController extends ControllerBase {
     public ResponseEntity<?> isOrdered(@RequestParam ObjectId productId, Principal principal) {
         try {
             return response(this.orderService.isOrdered(productId, findIdByUsername(principal.getName())),
+                    HttpStatus.OK);
+        } catch (MongoException e) {
+            e.printStackTrace();
+            return response("Server Error !!!", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/statistics")
+    public ResponseEntity<?> statistics(Principal principal) {
+        try {
+            return response(this.orderService.statistic(findIdByUsername(principal.getName())),
                     HttpStatus.OK);
         } catch (MongoException e) {
             e.printStackTrace();

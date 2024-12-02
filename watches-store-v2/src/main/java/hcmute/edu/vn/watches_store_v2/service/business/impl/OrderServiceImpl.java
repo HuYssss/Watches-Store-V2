@@ -7,6 +7,7 @@ import hcmute.edu.vn.watches_store_v2.dto.order.request.CancelOrder;
 import hcmute.edu.vn.watches_store_v2.dto.order.request.OrderRequest;
 import hcmute.edu.vn.watches_store_v2.dto.order.response.OrderResponse;
 import hcmute.edu.vn.watches_store_v2.dto.order.response.OrderSuccessResponse;
+import hcmute.edu.vn.watches_store_v2.dto.order.response.Statistic;
 import hcmute.edu.vn.watches_store_v2.dto.orderLine.OrderLineDetail;
 import hcmute.edu.vn.watches_store_v2.dto.product.response.ProductResponse;
 import hcmute.edu.vn.watches_store_v2.dto.orderLine.response.OrderLineResponse;
@@ -17,6 +18,7 @@ import hcmute.edu.vn.watches_store_v2.entity.OrderLine;
 import hcmute.edu.vn.watches_store_v2.helper.payment_vnpay.PaymentService;
 import hcmute.edu.vn.watches_store_v2.mapper.OrderMapper;
 import hcmute.edu.vn.watches_store_v2.mapper.OrderLineMapper;
+import hcmute.edu.vn.watches_store_v2.mapper.StatisticMapper;
 import hcmute.edu.vn.watches_store_v2.repository.OrderRepository;
 import hcmute.edu.vn.watches_store_v2.service.business.OrderService;
 import hcmute.edu.vn.watches_store_v2.service.component.*;
@@ -44,11 +46,12 @@ public class OrderServiceImpl implements OrderService {
     private final ProductService productService;
 
     @Override
-    public List<OrderResponse> getAllUserOrders(ObjectId userId) {
+    public List<OrderResponse> getAllUserOrders(ObjectId userId, String state) {
         try {
 
             return this.orderRepository.findAllByUserId(userId)
                     .stream()
+                    .filter(order -> state.equals("none") || order.getState().equals(state))
                     .map(o -> OrderMapper.mapOrderResp(o))
                     .collect(Collectors.toList());
         } catch (MongoException e) {
@@ -255,6 +258,45 @@ public class OrderServiceImpl implements OrderService {
         }
 
         return isOrdered;
+    }
+
+    @Override
+    public Statistic statistic(ObjectId userId) {
+        List<Order> orders = this.orderRepository.findAllByUserId(userId);
+        Statistic statistic = StatisticMapper.mapStatistic();
+
+        for(Order order : orders) {
+
+            switch (order.getState()) {
+                case "processing":
+                    statistic.getStatus().increaseProcessing();
+                    break;
+
+                case "delivering":
+                    statistic.getStatus().increaseDelivery();
+                    break;
+
+                case "complete":
+                    statistic.getStatus().increaseComplete();
+                    break;
+
+                case "cancel":
+                    statistic.getStatus().increaseCancel();
+                    break;
+            }
+
+            log.info("Month {}", order.getCreatedAt().getMonth());
+
+            for (Statistic.Price price : statistic.getPrices()) {
+                if (price.getMonth() == order.getCreatedAt().getMonth() + 1 && !order.getState().equals("cancel")) {
+
+                    price.setPrice(price.getPrice() + order.getTotalPrice());
+                }
+            }
+
+        }
+
+        return statistic;
     }
 
     private double calculateItemPrice(List<OrderLineDetail> item) {

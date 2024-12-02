@@ -20,4 +20,5 @@ public class Service {
     private String message;
     private String type;
     private List<String> img;
+    private String state;
 }
