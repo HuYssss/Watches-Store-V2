@@ -112,7 +112,7 @@ public class OrderServiceImpl implements OrderService {
         Optional<Order> presentOrder = this.orderRepository.findById(order);
 
         if (presentOrder.isPresent() && presentOrder.get().getUserId().equals(userId)
-                && !presentOrder.get().getState().equals("processing")) {
+                && presentOrder.get().getState().equals("processing")) {
 
             presentOrder.get().setState("cancel");
             if (message == null)        presentOrder.get().setCancelMessage("Không có nhu cầu mua");
