@@ -41,9 +41,13 @@ public class JwtAccessTokenFilter extends OncePerRequestFilter {
 
             log.info("[JwtAccessTokenFilter:doFilterInternal]Filtering the Http Request:{}", request.getRequestURI());
 
-            final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+            String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
             log.info("[JWT AccessToken] :: AuthHeader = {}",authHeader);
+
+            if (request.getRequestURI().contains("/get-all-order-realtime")) {
+                authHeader = request.getParameter("token");
+            }
 
             JwtDecoder jwtDecoder =  NimbusJwtDecoder.withPublicKey(rsaKeyRecord.rsaPublicKey()).build();
 
@@ -58,7 +62,7 @@ public class JwtAccessTokenFilter extends OncePerRequestFilter {
 
             final String userName = jwtTokenUtils.getUserName(jwtToken);
 
-            if(!userName.isEmpty() && SecurityContextHolder.getContext().getAuthentication() == null){
+            if(!userName.isEmpty() && SecurityContextHolder.getContext().getAuthentication() == null) {
 
                 UserDetails userDetails = jwtTokenUtils.userDetails(userName);
                 if(jwtTokenUtils.isTokenValid(jwtToken,userDetails)){
@@ -74,10 +78,11 @@ public class JwtAccessTokenFilter extends OncePerRequestFilter {
                     SecurityContextHolder.setContext(securityContext);
                 }
             }
+
             log.info("[JwtAccessTokenFilter:doFilterInternal] Completed");
 
             filterChain.doFilter(request,response);
-        }catch (JwtValidationException jwtValidationException){
+        } catch (JwtValidationException jwtValidationException){
             log.error("[JwtAccessTokenFilter:doFilterInternal] Exception due to :{}",jwtValidationException.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,jwtValidationException.getMessage());
         }

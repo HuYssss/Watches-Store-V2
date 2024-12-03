@@ -77,12 +77,8 @@ public class ManageOrderController extends ControllerBase {
         }
     }
 
-    @PreAuthorize("hasAuthority('SCOPE_ACCESS_FULL_SYSTEM')")
     @GetMapping(value = "/get-all-order-realtime", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<String> getAllRealtimeOrder() {
-//        Order order = this.orderRepository.findById(new ObjectId("673a021b8099935668157de1")).orElse(null);
-
-//        List<OrderResponse> resp = this.orderRepository.findAll().stream().map(OrderMapper::mapOrderResp).collect(Collectors.toList());
 
         List<OrderResponse> resp = this.orderService.getAllOrders();
 
