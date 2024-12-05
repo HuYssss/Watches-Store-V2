@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -20,5 +21,6 @@ public class Service {
     private String message;
     private String type;
     private List<String> img;
+    private Date creatAt;
     private String state;
 }

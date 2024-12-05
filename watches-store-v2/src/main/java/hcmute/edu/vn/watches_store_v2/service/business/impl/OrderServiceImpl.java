@@ -201,6 +201,8 @@ public class OrderServiceImpl implements OrderService {
         if (order != null) {
             order.setState("delivery");
             this.orderRepository.save(order);
+
+            return OrderMapper.mapOrderResp(order);
         }
 
         return null;

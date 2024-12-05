@@ -5,6 +5,8 @@ import hcmute.edu.vn.watches_store_v2.dto.service.response.ServiceResponse;
 import hcmute.edu.vn.watches_store_v2.entity.Service;
 import org.bson.types.ObjectId;
 
+import java.util.Date;
+
 public class ServiceMapper {
     public static ServiceResponse mapServiceResponse(Service service) {
         return new ServiceResponse(
@@ -15,6 +17,7 @@ public class ServiceMapper {
                 service.getMessage(),
                 service.getType(),
                 service.getImg(),
+                service.getCreatAt(),
                 service.getState()
         );
     }
@@ -28,7 +31,20 @@ public class ServiceMapper {
                 serviceRequest.getMessage(),
                 serviceRequest.getType(),
                 serviceRequest.getImg(),
+                new Date(),
                 "active"
         );
+    }
+
+    public static Service mapServiceFromPhone(String phone) {
+        return new Service(new ObjectId(),
+                "guest",
+                phone,
+                null,
+                "Yêu cầu gọi lại",
+                "Call",
+                null,
+                new Date(),
+                "active");
     }
 }

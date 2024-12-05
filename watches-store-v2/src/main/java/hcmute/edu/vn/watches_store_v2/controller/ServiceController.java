@@ -30,4 +30,18 @@ public class ServiceController extends ControllerBase {
             return response(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PostMapping("calling-service")
+    public ResponseEntity<?> callService(@RequestParam String phone, Principal principal) {
+
+        Service service = ServiceMapper.mapServiceFromPhone(phone);
+
+        try {
+            serviceRepository.save(service);
+            return response(service, HttpStatus.OK);
+        } catch (Exception e) {
+            return response(e, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
 }

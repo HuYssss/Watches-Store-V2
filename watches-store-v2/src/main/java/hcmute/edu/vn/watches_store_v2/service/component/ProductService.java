@@ -33,4 +33,6 @@ public interface ProductService {
     List<ProductResponse> updateDiscountAllProduct(ObjectId idCategory, double discount);
     ProductResponse updateDiscount(ObjectId idProduct, double discount, String key);
     ProductReviewResponse getProductReview(ObjectId idProduct);
+
+    List<ProductResponse> getProductMultiple(List<ObjectId> idProduct);
 }

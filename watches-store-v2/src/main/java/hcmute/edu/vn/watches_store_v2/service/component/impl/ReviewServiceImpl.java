@@ -1,19 +1,24 @@
 package hcmute.edu.vn.watches_store_v2.service.component.impl;
 
 import com.mongodb.MongoException;
+import hcmute.edu.vn.watches_store_v2.dto.review.response.IsReviewMultipleResponse;
+import hcmute.edu.vn.watches_store_v2.dto.product.response.ProductResponse;
 import hcmute.edu.vn.watches_store_v2.dto.review.request.UpdateReviewRequest;
-import hcmute.edu.vn.watches_store_v2.dto.user.response.ProfileOrder;
+import hcmute.edu.vn.watches_store_v2.dto.review.response.ReviewResponse;
 import hcmute.edu.vn.watches_store_v2.entity.Review;
 import hcmute.edu.vn.watches_store_v2.entity.User;
+import hcmute.edu.vn.watches_store_v2.mapper.ProductMapper;
+import hcmute.edu.vn.watches_store_v2.mapper.ReviewMapper;
 import hcmute.edu.vn.watches_store_v2.mapper.UserMapper;
+import hcmute.edu.vn.watches_store_v2.repository.ProductRepository;
 import hcmute.edu.vn.watches_store_v2.repository.ReviewRepository;
 import hcmute.edu.vn.watches_store_v2.repository.UserRepository;
-import hcmute.edu.vn.watches_store_v2.service.business.ProfileService;
 import hcmute.edu.vn.watches_store_v2.service.component.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -22,6 +27,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
+    private final ProductRepository productRepository;
 
     @Override
     public Review createReview(Review review, ObjectId userId) {
@@ -97,5 +103,37 @@ public class ReviewServiceImpl implements ReviewService {
             e.printStackTrace();
             throw new MongoException("Can't delete review");
         }
+    }
+
+    @Override
+    public List<IsReviewMultipleResponse> getReviewMultiples(ObjectId user, List<ObjectId> productIds) {
+
+        List<ReviewResponse> reviewResponses = this.reviewRepository.findByUserId(user)
+                .stream()
+                .map(ReviewMapper::mapReviewResponse)
+                .toList();
+
+        List<ProductResponse> productResponses = this.productRepository.findAllById(productIds)
+                .stream()
+                .map(ProductMapper::mapProductResp)
+                .toList();
+
+        List<IsReviewMultipleResponse> isReviewMultipleResponses = new ArrayList<>();
+
+        for (ProductResponse p : productResponses) {
+            IsReviewMultipleResponse isReviewMultipleResponse = new IsReviewMultipleResponse();
+            isReviewMultipleResponse.setProduct(p);
+
+            for (ReviewResponse r : reviewResponses) {
+                if (r.getProductId().equals(p.getId())) {
+                    isReviewMultipleResponse.addReview(r);
+                }
+            }
+
+            isReviewMultipleResponses.add(isReviewMultipleResponse);
+        }
+
+
+        return isReviewMultipleResponses;
     }
 }

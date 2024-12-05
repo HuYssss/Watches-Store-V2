@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -17,5 +18,6 @@ public class ServiceResponse {
     private String message;
     private String type;
     private List<String> img;
+    private Date createAt;
     private String state;
 }

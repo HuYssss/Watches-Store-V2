@@ -499,6 +499,27 @@ public class ProductServiceImpl implements ProductService {
         return response;
     }
 
+    @Override
+    public List<ProductResponse> getProductMultiple(List<ObjectId> idProduct) {
+
+        List<ProductResponse> productResponses = this.productRepository.findAll()
+                .stream()
+                .map(ProductMapper::mapProductResp)
+                .collect(Collectors.toList());
+
+        List<ProductResponse> resp = new ArrayList<>();
+
+        for (ProductResponse productResponse : productResponses) {
+            for (ObjectId id : idProduct) {
+                if (productResponse.getId().equals(id.toHexString())) {
+                    resp.add(productResponse);
+                }
+            }
+        }
+
+        return resp;
+    }
+
     public Product checkStateProduct(Product product)  {
         int count = 0;
 

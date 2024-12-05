@@ -1,7 +1,7 @@
 package hcmute.edu.vn.watches_store_v2.service.component;
 
+import hcmute.edu.vn.watches_store_v2.dto.review.response.IsReviewMultipleResponse;
 import hcmute.edu.vn.watches_store_v2.dto.review.request.UpdateReviewRequest;
-import hcmute.edu.vn.watches_store_v2.dto.user.response.ProfileOrder;
 import hcmute.edu.vn.watches_store_v2.entity.Review;
 import org.bson.types.ObjectId;
 
@@ -13,4 +13,6 @@ public interface ReviewService {
     Review deleteReview(ObjectId reviewId);
     List<Review> getReviewsByProduct(ObjectId productId);
     List<Review> getAllReviews();
+
+    List<IsReviewMultipleResponse> getReviewMultiples(ObjectId user, List<ObjectId> productIds);
 }

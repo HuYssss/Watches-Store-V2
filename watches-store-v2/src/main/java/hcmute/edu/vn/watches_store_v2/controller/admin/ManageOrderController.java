@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @RestController
@@ -28,11 +30,14 @@ public class ManageOrderController extends ControllerBase {
 
     private final OrderService orderService;
 
+    private final AtomicReference<List<OrderResponse>> sentOrders = new AtomicReference<>(new ArrayList<>());
+
     @PreAuthorize("hasAuthority('SCOPE_ACCESS_FULL_SYSTEM')")
     @GetMapping("/get-all-order")
     public ResponseEntity<?> getAllOrder() {
         List<OrderResponse> orderResponses = this.orderService.getAllOrders();
         if (orderResponses != null) {
+            sentOrders.set(orderResponses);
             return response(orderResponses, HttpStatus.OK);
         }
 
@@ -42,6 +47,7 @@ public class ManageOrderController extends ControllerBase {
     @PreAuthorize("hasAuthority('SCOPE_ACCESS_FULL_SYSTEM')")
     @PutMapping("/approval-oder")
     public ResponseEntity<?> approveOrder(@RequestParam ObjectId orderId) {
+
         OrderResponse response = this.orderService.approvalOrder(orderId);
 
         if (response != null) {
@@ -79,12 +85,21 @@ public class ManageOrderController extends ControllerBase {
 
     @GetMapping(value = "/get-all-order-realtime", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<String> getAllRealtimeOrder() {
-
-        List<OrderResponse> resp = this.orderService.getAllOrders();
-
         return Flux.interval(Duration.ofSeconds(5))
                 .map(sequence -> {
-                    String data = toJson(resp);
+                    List<OrderResponse> newOrders = this.orderService.getAllOrders();
+                    log.info("New orders: {}", newOrders.size());
+
+                    List<OrderResponse> previousOrders = sentOrders.get();
+                    log.info("Previous orders: {}", previousOrders.size());
+
+                    List<OrderResponse> ordersToSend = newOrders.stream()
+                            .filter(order -> !previousOrders.contains(order))
+                            .toList();
+
+                    sentOrders.set(newOrders);
+
+                    String data = toJson(ordersToSend);
                     log.info("Send data: {}", data);
                     return data;
                 })

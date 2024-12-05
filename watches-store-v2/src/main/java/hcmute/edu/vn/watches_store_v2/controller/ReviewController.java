@@ -1,9 +1,9 @@
 package hcmute.edu.vn.watches_store_v2.controller;
 
 import hcmute.edu.vn.watches_store_v2.base.ControllerBase;
+import hcmute.edu.vn.watches_store_v2.dto.review.request.IsReviewMultipleReq;
 import hcmute.edu.vn.watches_store_v2.dto.review.request.ReviewRequest;
 import hcmute.edu.vn.watches_store_v2.dto.review.request.UpdateReviewRequest;
-import hcmute.edu.vn.watches_store_v2.dto.review.response.ReviewResponse;
 import hcmute.edu.vn.watches_store_v2.entity.Review;
 import hcmute.edu.vn.watches_store_v2.mapper.ReviewMapper;
 import hcmute.edu.vn.watches_store_v2.service.component.ReviewService;
@@ -11,13 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/review")
@@ -53,6 +49,16 @@ public class ReviewController extends ControllerBase {
         try {
             this.reviewService.deleteReview(reviewId);
             return response(null, HttpStatus.OK);
+        } catch (Exception e) {
+            return response(e, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/is-review")
+    public ResponseEntity<?> isReview(@RequestBody IsReviewMultipleReq req, Principal principal) {
+        try {
+            return response(this.reviewService.getReviewMultiples(findIdByUsername(principal.getName()), req.getProductIds()),
+                    HttpStatus.OK);
         } catch (Exception e) {
             return response(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
