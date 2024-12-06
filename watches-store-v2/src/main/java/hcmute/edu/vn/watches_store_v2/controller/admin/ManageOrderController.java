@@ -19,6 +19,7 @@ import reactor.core.publisher.Flux;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -34,11 +35,18 @@ public class ManageOrderController extends ControllerBase {
 
     @PreAuthorize("hasAuthority('SCOPE_ACCESS_FULL_SYSTEM')")
     @GetMapping("/get-all-order")
-    public ResponseEntity<?> getAllOrder() {
+    public ResponseEntity<?> getAllOrder(
+            @RequestParam(defaultValue = "none") String q) {
         List<OrderResponse> orderResponses = this.orderService.getAllOrders();
         if (orderResponses != null) {
             sentOrders.set(orderResponses);
-            return response(orderResponses, HttpStatus.OK);
+
+
+            return response(orderResponses.stream()
+                            .filter(o -> q.equals("none")
+                                    || o.getUser().getName().toLowerCase(new Locale("vi", "VN")).contains(q.toLowerCase(new Locale("vi", "VN")))
+                                    || o.getId().equals(q))
+                    , HttpStatus.OK);
         }
 
         return response(null, HttpStatus.INTERNAL_SERVER_ERROR);

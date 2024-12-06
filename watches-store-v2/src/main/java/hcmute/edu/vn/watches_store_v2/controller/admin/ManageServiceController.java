@@ -13,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -44,11 +45,14 @@ public class ManageServiceController extends ControllerBase {
 
     @PreAuthorize("hasAuthority('SCOPE_ACCESS_FULL_SYSTEM')")
     @GetMapping("/get-all")
-    public ResponseEntity<?> getAllServices() {
+    public ResponseEntity<?> getAllServices(@RequestParam(defaultValue = "none") String q) {
         try {
             List<ServiceResponse> services = serviceRepository.findAll()
                     .stream()
                     .map(ServiceMapper::mapServiceResponse)
+                    .filter(s -> q.equals("none")
+                            || s.getName().toLowerCase(new Locale("vi", "VN")).contains(q.toLowerCase(new Locale("vi", "VN")))
+                            || s.getState().equals(q))
                     .collect(Collectors.toList());
 
             return response(services, HttpStatus.OK);

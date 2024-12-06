@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 
 @RestController
-@RequestMapping("api/service")
+@RequestMapping("service")
 @RequiredArgsConstructor
 public class ServiceController extends ControllerBase {
 

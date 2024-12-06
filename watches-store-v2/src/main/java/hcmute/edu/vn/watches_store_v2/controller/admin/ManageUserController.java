@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Locale;
 
 @RequiredArgsConstructor
 @RestController
@@ -22,11 +23,16 @@ public class ManageUserController extends ControllerBase {
 
     @PreAuthorize("hasAuthority('SCOPE_ACCESS_FULL_SYSTEM')")
     @GetMapping("/get-all-user")
-    public ResponseEntity<?> getAllUser() {
+    public ResponseEntity<?> getAllUser(@RequestParam(defaultValue = "none") String q) {
         List<ProfileResponse> users = userService.getAllUser();
 
         if (users != null) {
-            return response(users, HttpStatus.OK);
+            return response(users.stream()
+                            .filter(u -> q.equals("none")
+                                    || (u.getFullName() != null && u.getFullName().toLowerCase(new Locale("vi", "VN")).contains(q.toLowerCase(new Locale("vi", "VN"))))
+                                    || (u.getPhone() != null && u.getPhone().contains(q))
+                                    || u.getEmail().contains(q))
+                    , HttpStatus.OK);
         }
         else
             return response(null, HttpStatus.INTERNAL_SERVER_ERROR);

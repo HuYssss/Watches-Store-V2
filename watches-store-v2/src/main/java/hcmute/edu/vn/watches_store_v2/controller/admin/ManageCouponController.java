@@ -16,6 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.Locale;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,10 +28,16 @@ public class ManageCouponController extends ControllerBase {
 
     @PreAuthorize("hasAuthority('SCOPE_ACCESS_FULL_SYSTEM')")
     @GetMapping("/get-all-coupon")
-    public ResponseEntity<?> getAllCoupon() {
+    public ResponseEntity<?> getAllCoupon(
+            @RequestParam(defaultValue = "none") String q
+    ) {
         try {
-            return response(
-                    this.couponService.getAllCoupons(),
+            return response(this.couponService.getAllCoupons()
+                            .stream()
+                            .filter(c -> q.equals("none")
+                                    || c.getCouponCode().equals(q)
+                                    || c.getCouponName().toLowerCase(new Locale("vi", "VN")).contains(q.toLowerCase(new Locale("vi", "VN")))
+                                    || (c.getProvince() != null && q.equals(String.valueOf(c.getProvince().getValue())))),
                     HttpStatus.OK
             );
         } catch (MongoException e) {
