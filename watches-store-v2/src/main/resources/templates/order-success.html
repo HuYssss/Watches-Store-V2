@@ -104,7 +104,7 @@
             <div class="product-details">
                 <p><b>Tên sản phẩm:</b> <span class="highlight" th:text="${product.product.productName}"></span></p>
                 <p><b>Số lượng:</b> <span class="highlight" th:text="${product.quantity}"></span></p>
-                <p><b>Giá tiền:</b> <span class="highlight" th:text="${#numbers.formatDecimal(product.product.price, 1, 'COMMA', 0, 'POINT')}"></span></p>
+                <p><b>Giá tiền:</b> <span class="highlight" th:text="${#numbers.formatDecimal(product.product.getOption().getValue().getPrice(), 1, 'COMMA', 0, 'POINT')}"></span></p>
             </div>
         </li>
     </ul>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xác nhận phản ánh và góp ý</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+<div style="background: linear-gradient(to right, #FF5733, #C70039); padding: 20px; text-align: center;">
+    <h1 style="color: white; margin: 0;">Xác nhận phản ánh và góp ý</h1>
+</div>
+<div style="background-color: #f9f9f9; padding: 20px; border-radius: 0 0 5px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+    <b><i>Xin chào <b th:text="${username}"></b>,</i></b>
+    <p>Chúng tôi đã nhận được phản ánh hoặc góp ý của bạn. Cảm ơn bạn đã dành thời gian chia sẻ ý kiến với Watches Store Website.</p>
+    <p>Thông tin phản ánh/góp ý:</p>
+    <blockquote style="background-color: #ffebee; padding: 15px; border-left: 5px solid #FF0000; margin: 20px 0;">
+        <i th:text="${feedbackMessage}"></i>
+    </blockquote>
+    <p><i>Thông điệp từ quản trị viên:</i></p>
+    <blockquote style="background-color: #fff3e0; padding: 15px; border-left: 5px solid #FF8C00; margin: 20px 0;">
+        <i th:text="${adminMessage}"></i>
+    </blockquote>
+    <p>Chúng tôi rất trân trọng ý kiến đóng góp của bạn và cam kết sẽ xem xét cẩn thận để cải thiện dịch vụ. Nếu cần thêm thông tin hoặc có bất kỳ câu hỏi nào, chúng tôi sẽ liên hệ qua email hoặc số điện thoại đã đăng ký.</p>
+    <p>Nếu bạn có bất kỳ thắc mắc nào, vui lòng liên hệ với chúng tôi qua email: <b>lehuyburn24@gmail.com</b>.</p>
+    <br><b>Trân trọng,<br>Watches Store Website,<br>Khoa Công Nghệ Thông Tin,<br>Trường Đại Học Sư Phạm Kỹ Thuật Thành Phố Hồ Chí Minh</b>
+</div>
+<div style="text-align: center; margin-top: 20px; color: #888; font-size: 0.8em;">
+    <p>This is an automated message, please do not reply to this email.</p>
+</div>
+</body>
+</html>

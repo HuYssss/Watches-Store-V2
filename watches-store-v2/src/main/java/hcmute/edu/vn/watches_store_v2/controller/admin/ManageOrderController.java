@@ -18,6 +18,7 @@ import reactor.core.publisher.Flux;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicReference;
@@ -36,16 +37,23 @@ public class ManageOrderController extends ControllerBase {
     @PreAuthorize("hasAuthority('SCOPE_ACCESS_FULL_SYSTEM')")
     @GetMapping("/get-all-order")
     public ResponseEntity<?> getAllOrder(
-            @RequestParam(defaultValue = "none") String q) {
+            @RequestParam(defaultValue = "none") String state,
+            @RequestParam(defaultValue = "none") String q,
+            @RequestParam Date startDay,
+            @RequestParam Date endDay) {
         List<OrderResponse> orderResponses = this.orderService.getAllOrders();
         if (orderResponses != null) {
-            sentOrders.set(orderResponses);
 
+            sentOrders.set(orderResponses);
 
             return response(orderResponses.stream()
                             .filter(o -> q.equals("none")
                                     || o.getUser().getName().toLowerCase(new Locale("vi", "VN")).contains(q.toLowerCase(new Locale("vi", "VN")))
+                                    || o.getUser().getPhone().contains(q.trim())
                                     || o.getId().equals(q))
+                            .filter(o -> state.equals("none") || o.getState().equals(state))
+                            .filter(o -> startDay == null || endDay == null
+                                    || (startDay.before(o.getCreatedAt()) && endDay.after(o.getCreatedAt())))
                     , HttpStatus.OK);
         }
 
@@ -68,6 +76,7 @@ public class ManageOrderController extends ControllerBase {
     @PreAuthorize("hasAuthority('SCOPE_ACCESS_FULL_SYSTEM')")
     @PutMapping("/decline-oder")
     public ResponseEntity<?> declineOrder(@RequestBody CancelOrder cancelOrder) {
+
         OrderResponse response = this.orderService.declineOrder(cancelOrder);
 
         if (response != null) {

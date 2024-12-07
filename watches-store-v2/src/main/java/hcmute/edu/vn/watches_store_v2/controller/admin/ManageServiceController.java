@@ -1,6 +1,7 @@
 package hcmute.edu.vn.watches_store_v2.controller.admin;
 
 import hcmute.edu.vn.watches_store_v2.base.ControllerBase;
+import hcmute.edu.vn.watches_store_v2.dto.service.request.ProceedServiceRequest;
 import hcmute.edu.vn.watches_store_v2.dto.service.response.ServiceResponse;
 import hcmute.edu.vn.watches_store_v2.entity.Service;
 import hcmute.edu.vn.watches_store_v2.mapper.ServiceMapper;
@@ -25,7 +26,8 @@ public class ManageServiceController extends ControllerBase {
 
     @PreAuthorize("hasAuthority('SCOPE_ACCESS_FULL_SYSTEM')")
     @PostMapping("/process-service")
-    public ResponseEntity<?> processService(@RequestParam ObjectId serviceId) {
+    public ResponseEntity<?> processService(@RequestParam ObjectId serviceId,
+                                            @RequestBody ProceedServiceRequest proceedServiceRequest) {
         try {
             Service service = this.serviceRepository.findById(serviceId).orElse(null);
 
@@ -34,6 +36,8 @@ public class ManageServiceController extends ControllerBase {
             }
 
             service.setState("proceed");
+
+
 
             this.serviceRepository.save(service);
 
@@ -45,14 +49,17 @@ public class ManageServiceController extends ControllerBase {
 
     @PreAuthorize("hasAuthority('SCOPE_ACCESS_FULL_SYSTEM')")
     @GetMapping("/get-all")
-    public ResponseEntity<?> getAllServices(@RequestParam(defaultValue = "none") String q) {
+    public ResponseEntity<?> getAllServices(
+            @RequestParam(defaultValue = "none") String q,
+            @RequestParam(defaultValue = "none") String state) {
         try {
             List<ServiceResponse> services = serviceRepository.findAll()
                     .stream()
                     .map(ServiceMapper::mapServiceResponse)
                     .filter(s -> q.equals("none")
+                            || s.getPhone().equals(q.trim())
                             || s.getName().toLowerCase(new Locale("vi", "VN")).contains(q.toLowerCase(new Locale("vi", "VN")))
-                            || s.getState().equals(q))
+                            || s.getState().equals(state))
                     .collect(Collectors.toList());
 
             return response(services, HttpStatus.OK);

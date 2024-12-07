@@ -89,7 +89,7 @@ public class OrderServiceImpl implements OrderService {
 
             this.orderRepository.save(order);
 
-//            this.mailService.orderSuccess(order);
+            this.mailService.orderSuccess(order);
 
             if (orderReq.getPaymentMethod().equals("vnpay"))
             {
@@ -162,7 +162,7 @@ public class OrderServiceImpl implements OrderService {
 
         this.orderRepository.save(order);
 
-//        this.mailService.orderSuccess(order);
+        this.mailService.orderSuccess(order);
 
         if (buyNowRequest.getPaymentMethod().equals("vnpay"))
         {

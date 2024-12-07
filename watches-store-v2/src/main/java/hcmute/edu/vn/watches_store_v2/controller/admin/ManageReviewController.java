@@ -37,7 +37,9 @@ public class ManageReviewController extends ControllerBase {
 
     @PreAuthorize("hasAuthority('SCOPE_ACCESS_FULL_SYSTEM')")
     @GetMapping("/get-all-review")
-    public ResponseEntity<?> getAllReview() {
+    public ResponseEntity<?> getAllReview(
+            @RequestParam(defaultValue = "none") String q,
+            @RequestParam int star) {
         try {
             List<Review> reviews = this.reviewService.getAllReviews();
 

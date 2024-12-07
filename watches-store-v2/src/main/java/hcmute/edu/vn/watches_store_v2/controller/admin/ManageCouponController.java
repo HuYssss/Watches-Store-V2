@@ -29,15 +29,17 @@ public class ManageCouponController extends ControllerBase {
     @PreAuthorize("hasAuthority('SCOPE_ACCESS_FULL_SYSTEM')")
     @GetMapping("/get-all-coupon")
     public ResponseEntity<?> getAllCoupon(
-            @RequestParam(defaultValue = "none") String q
+            @RequestParam(defaultValue = "none") String q,
+            @RequestParam(defaultValue = "none") String province
     ) {
         try {
             return response(this.couponService.getAllCoupons()
                             .stream()
                             .filter(c -> q.equals("none")
                                     || c.getCouponCode().equals(q)
-                                    || c.getCouponName().toLowerCase(new Locale("vi", "VN")).contains(q.toLowerCase(new Locale("vi", "VN")))
-                                    || (c.getProvince() != null && q.equals(String.valueOf(c.getProvince().getValue())))),
+                                    || c.getCouponName().toLowerCase(new Locale("vi", "VN")).contains(q.toLowerCase(new Locale("vi", "VN"))))
+                            .filter(c -> province.equals("none")
+                                    || (c.getProvince() != null && c.getProvince().getValue() == Integer.parseInt(province))),
                     HttpStatus.OK
             );
         } catch (MongoException e) {
