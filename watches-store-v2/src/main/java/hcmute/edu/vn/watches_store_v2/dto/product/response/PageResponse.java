@@ -14,6 +14,8 @@ public class PageResponse {
     private List<ProductResponse> productResponses;
     private int totalPages;
     private int totalProducts;
+    private List<ProductResponse> totalProductNotSelling = new ArrayList<>();
+    private List<ProductResponse> topHighestAccessProducts = new ArrayList<>();
     private List<String> wireMaterial = new ArrayList<>();
     private List<String> shape = new ArrayList<>();
     private List<Integer> waterProof = new ArrayList<>();

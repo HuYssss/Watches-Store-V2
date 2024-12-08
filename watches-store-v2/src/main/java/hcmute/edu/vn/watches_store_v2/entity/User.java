@@ -42,6 +42,8 @@ public class User {
 
     private String reasonBlock;
 
+    private Date createdAt;
+
     private Date blockAt;
 
     private boolean verified;

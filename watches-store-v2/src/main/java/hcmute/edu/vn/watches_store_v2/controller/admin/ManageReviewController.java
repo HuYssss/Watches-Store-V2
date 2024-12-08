@@ -14,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @RestController
@@ -39,13 +40,18 @@ public class ManageReviewController extends ControllerBase {
     @GetMapping("/get-all-review")
     public ResponseEntity<?> getAllReview(
             @RequestParam(defaultValue = "none") String q,
-            @RequestParam int star) {
+            @RequestParam(defaultValue = "0") int star) {
         try {
             List<Review> reviews = this.reviewService.getAllReviews();
 
             List<ReviewResponse> resp = reviews
                     .stream()
                     .map(ReviewMapper::mapReviewResponse)
+                    .filter(r -> q.equals("none")
+                            || r.getUser().getName().toLowerCase(new Locale("vi", "VN")).contains(q.trim().toLowerCase(new Locale("vi", "VN")))
+                            || r.getUser().getPhone().contains(q.trim()))
+                    .filter(r -> star == 0
+                            || r.getRating() == star)
                     .collect(Collectors.toList());
 
             return response(resp, HttpStatus.OK);

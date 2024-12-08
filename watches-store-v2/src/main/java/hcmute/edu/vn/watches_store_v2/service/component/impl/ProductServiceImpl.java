@@ -243,7 +243,7 @@ public class ProductServiceImpl implements ProductService {
                         Arrays.stream(type.split(","))
                                 .map(String::trim)
                                 .anyMatch(wm -> product.getType().toLowerCase(new Locale("vi", "VN")).contains(wm.toLowerCase(new Locale("vi", "VN")))))
-                .filter(product -> !product.getStateProduct().equals("deleted"))
+                .filter(product -> product.getStateProduct().equals("selling"))
                 .collect(Collectors.toList());
 
         if (!sortBy.equals("none")) {
@@ -320,6 +320,23 @@ public class ProductServiceImpl implements ProductService {
 
         List<Product> products = this.productRepository.findAll();
 
+        List<ProductResponse> topHighestAccessProducts = this.productRepository.findAll()
+                .stream()
+                .sorted((p1, p2) -> Integer.compare(p2.getAccess(), p1.getAccess()))
+                .limit(5)
+                .map(ProductMapper::mapProductResp)
+                .collect(Collectors.toList());
+
+        List<ProductResponse> totalProductNotSelling = new ArrayList<>();
+
+        products.forEach(product -> {
+            product.getOption().forEach(option -> {
+                if (option.getValue().getQuantity() == 0) {
+                    totalProductNotSelling.add(ProductMapper.mapProductResp(product));
+                }
+            });
+        });
+
         List<ProductResponse> allProducts = products
                 .stream()
                 .map(ProductMapper::mapProductResp)
@@ -381,6 +398,8 @@ public class ProductServiceImpl implements ProductService {
 
         PageResponse pageResponse = new PageResponse();
         pageResponse.setTotalProducts(totalItems);
+        pageResponse.setTopHighestAccessProducts(topHighestAccessProducts);
+        pageResponse.setTotalProductNotSelling(totalProductNotSelling);
 
         if (startIndex > allProducts.size()) {
             return null;

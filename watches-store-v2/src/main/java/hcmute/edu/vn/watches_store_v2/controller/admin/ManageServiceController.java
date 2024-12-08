@@ -58,8 +58,8 @@ public class ManageServiceController extends ControllerBase {
                     .map(ServiceMapper::mapServiceResponse)
                     .filter(s -> q.equals("none")
                             || s.getPhone().equals(q.trim())
-                            || s.getName().toLowerCase(new Locale("vi", "VN")).contains(q.toLowerCase(new Locale("vi", "VN")))
-                            || s.getState().equals(state))
+                            || s.getName().toLowerCase(new Locale("vi", "VN")).contains(q.toLowerCase(new Locale("vi", "VN"))))
+                    .filter(s -> state.equals("none") || s.getState().equals(state))
                     .collect(Collectors.toList());
 
             return response(services, HttpStatus.OK);

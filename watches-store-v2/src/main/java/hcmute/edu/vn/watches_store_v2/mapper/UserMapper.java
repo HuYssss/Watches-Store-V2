@@ -9,6 +9,7 @@ import hcmute.edu.vn.watches_store_v2.entity.User;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class UserMapper {
@@ -26,6 +27,7 @@ public class UserMapper {
                 "active",
                 "Local",
                 null,
+                new Date(),
                 null,
                 false,
                 null,
@@ -43,6 +45,7 @@ public class UserMapper {
                 user.getAvatarImg(),
                 user.getAddress(),
                 user.getReasonBlock(),
+                user.getCreatedAt(),
                 user.getBlockAt(),
                 user.getState(),
                 user.isVerified(),

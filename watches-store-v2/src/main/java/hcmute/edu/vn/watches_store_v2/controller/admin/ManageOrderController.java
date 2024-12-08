@@ -33,14 +33,13 @@ public class ManageOrderController extends ControllerBase {
     private final OrderService orderService;
 
     private final AtomicReference<List<OrderResponse>> sentOrders = new AtomicReference<>(new ArrayList<>());
+    private boolean call_get_all = false;
 
     @PreAuthorize("hasAuthority('SCOPE_ACCESS_FULL_SYSTEM')")
     @GetMapping("/get-all-order")
     public ResponseEntity<?> getAllOrder(
             @RequestParam(defaultValue = "none") String state,
-            @RequestParam(defaultValue = "none") String q,
-            @RequestParam Date startDay,
-            @RequestParam Date endDay) {
+            @RequestParam(defaultValue = "none") String q) {
         List<OrderResponse> orderResponses = this.orderService.getAllOrders();
         if (orderResponses != null) {
 
@@ -52,8 +51,6 @@ public class ManageOrderController extends ControllerBase {
                                     || o.getUser().getPhone().contains(q.trim())
                                     || o.getId().equals(q))
                             .filter(o -> state.equals("none") || o.getState().equals(state))
-                            .filter(o -> startDay == null || endDay == null
-                                    || (startDay.before(o.getCreatedAt()) && endDay.after(o.getCreatedAt())))
                     , HttpStatus.OK);
         }
 
@@ -114,7 +111,10 @@ public class ManageOrderController extends ControllerBase {
                             .filter(order -> !previousOrders.contains(order))
                             .toList();
 
-                    sentOrders.set(newOrders);
+                    if (call_get_all) {
+                        call_get_all = false;
+                        sentOrders.set(newOrders);
+                    }
 
                     String data = toJson(ordersToSend);
                     log.info("Send data: {}", data);
