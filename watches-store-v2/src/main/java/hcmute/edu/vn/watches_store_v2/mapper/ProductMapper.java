@@ -35,6 +35,7 @@ public class ProductMapper {
                 product.getWaterproof(),
                 product.getType(),
                 product.getStateProduct(),
+                0,
                 product.getAccess()
         );
     }

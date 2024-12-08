@@ -6,6 +6,7 @@ import hcmute.edu.vn.watches_store_v2.dto.order.request.OrderRequest;
 import hcmute.edu.vn.watches_store_v2.dto.order.response.OrderResponse;
 import hcmute.edu.vn.watches_store_v2.dto.order.response.OrderSuccessResponse;
 import hcmute.edu.vn.watches_store_v2.dto.order.response.Statistic;
+import hcmute.edu.vn.watches_store_v2.dto.order.response.StatisticAdmin;
 import hcmute.edu.vn.watches_store_v2.entity.Order;
 import org.bson.types.ObjectId;
 
@@ -28,4 +29,5 @@ public interface OrderService {
 
     boolean isOrdered(ObjectId productId, ObjectId userId);
     Statistic statistic(ObjectId userId);
+    StatisticAdmin statisticAdmin();
 }

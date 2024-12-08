@@ -2,6 +2,8 @@ package hcmute.edu.vn.watches_store_v2.service.component.impl;
 
 import com.mongodb.MongoException;
 import hcmute.edu.vn.watches_store_v2.dto.category.request.AssignCategoryRequest;
+import hcmute.edu.vn.watches_store_v2.dto.order.response.OrderResponse;
+import hcmute.edu.vn.watches_store_v2.dto.orderLine.OrderLineDetail;
 import hcmute.edu.vn.watches_store_v2.dto.product.Option;
 import hcmute.edu.vn.watches_store_v2.dto.product.response.PageResponse;
 import hcmute.edu.vn.watches_store_v2.dto.product.response.ProductResponse;
@@ -9,9 +11,11 @@ import hcmute.edu.vn.watches_store_v2.dto.product.response.ProductReviewResponse
 import hcmute.edu.vn.watches_store_v2.entity.Category;
 import hcmute.edu.vn.watches_store_v2.entity.Product;
 import hcmute.edu.vn.watches_store_v2.entity.Review;
+import hcmute.edu.vn.watches_store_v2.mapper.OrderMapper;
 import hcmute.edu.vn.watches_store_v2.mapper.ProductMapper;
 import hcmute.edu.vn.watches_store_v2.mapper.ReviewMapper;
 import hcmute.edu.vn.watches_store_v2.repository.CategoryRepository;
+import hcmute.edu.vn.watches_store_v2.repository.OrderRepository;
 import hcmute.edu.vn.watches_store_v2.repository.ProductRepository;
 import hcmute.edu.vn.watches_store_v2.repository.ReviewRepository;
 import hcmute.edu.vn.watches_store_v2.service.component.ProductService;
@@ -32,14 +36,33 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ReviewRepository reviewRepository;
+    private final OrderRepository orderRepository;
 
     @Override
     public List<ProductResponse> getAllProductResp() {
         try {
-            return this.productRepository.findAll()
+
+            List<ProductResponse> productResponses = this.productRepository.findAll()
                     .stream()
                     .map(p -> ProductMapper.mapProductResp(p))
                     .collect(Collectors.toList());
+
+            List<OrderResponse> orderResponses = this.orderRepository.findAll()
+                    .stream()
+                    .map(o -> OrderMapper.mapOrderResp(o))
+                    .collect(Collectors.toList());
+
+            for (OrderResponse o : orderResponses) {
+                for (OrderLineDetail p : o.getProducts()) {
+                    for (ProductResponse pr : productResponses) {
+                        if (pr.getId().equals(p.getProduct().getId())) {
+                            pr.increaseSelling();
+                        }
+                    }
+                }
+            }
+
+            return productResponses;
         } catch (MongoException e) {
             e.printStackTrace();
             throw new MongoException("Can't get all products");
@@ -186,23 +209,7 @@ public class ProductServiceImpl implements ProductService {
         return product;
     }
 
-    @Override
-    public Product sellingOption(ObjectId productId, String key) {
-        Product product = this.productRepository.findById(productId).orElse(null);
 
-        if (product == null)
-            return null;
-
-        for (Option o : product.getOption()) {
-            if (o.getKey().equals(key)) {
-                o.getValue().setState("selling");
-            }
-        }
-
-        this.productRepository.save(product);
-
-        return product;
-    }
 
     @Override
     public PageResponse getAllProduct(String gender, String wireMaterial, String shape, String waterProof
@@ -210,11 +217,10 @@ public class ProductServiceImpl implements ProductService {
 
         log.info("[ProductServiceImpl] Starting all products");
 
-        List<Product> products = this.productRepository.findAll();
+        List<ProductResponse> products = getAllProductResp();
 
         List<ProductResponse> allProducts = products
                 .stream()
-                .map(ProductMapper::mapProductResp)
                 .filter(product -> gender.equals("none") || product.getGenderUser().toLowerCase(new Locale("vi", "VN")).contains(gender.toLowerCase(new Locale("vi", "VN"))))
 
                 .filter(product -> wireMaterial.equals("none") ||
@@ -257,6 +263,10 @@ public class ProductServiceImpl implements ProductService {
                 comparator = Comparator.comparing(ProductResponse::getProductName);
             } else if (sortBy.equals("z-a")) {
                 comparator = Comparator.comparing(ProductResponse::getProductName).reversed();
+            } else if (sortBy.equals("topView")) {
+                comparator = Comparator.comparingInt(ProductResponse::getAccess).reversed();
+            } else if (sortBy.equals("topSelling")) {
+                comparator = Comparator.comparingInt(ProductResponse::getSelling).reversed();
             }
 
             if (comparator != null) {
@@ -318,7 +328,7 @@ public class ProductServiceImpl implements ProductService {
             , double minPrice, double maxPrice, int pageNum) {
         log.info("[ProductServiceImpl] Starting all products");
 
-        List<Product> products = this.productRepository.findAll();
+        List<ProductResponse> products = getAllProductResp();
 
         List<ProductResponse> topHighestAccessProducts = this.productRepository.findAll()
                 .stream()
@@ -332,14 +342,13 @@ public class ProductServiceImpl implements ProductService {
         products.forEach(product -> {
             product.getOption().forEach(option -> {
                 if (option.getValue().getQuantity() == 0) {
-                    totalProductNotSelling.add(ProductMapper.mapProductResp(product));
+                    totalProductNotSelling.add(product);
                 }
             });
         });
 
         List<ProductResponse> allProducts = products
                 .stream()
-                .map(ProductMapper::mapProductResp)
                 .filter(product -> gender.equals("none") || product.getGenderUser().toLowerCase(new Locale("vi", "VN")).contains(gender.toLowerCase(new Locale("vi", "VN"))))
 
                 .filter(product -> wireMaterial.equals("none") ||
@@ -382,6 +391,10 @@ public class ProductServiceImpl implements ProductService {
                 comparator = Comparator.comparing(ProductResponse::getProductName);
             } else if (sortBy.equals("z-a")) {
                 comparator = Comparator.comparing(ProductResponse::getProductName).reversed();
+            } else if (sortBy.equals("topView")) {
+                comparator = Comparator.comparingInt(ProductResponse::getAccess).reversed();
+            } else if (sortBy.equals("topSelling")) {
+                comparator = Comparator.comparingInt(ProductResponse::getSelling).reversed();
             }
 
             if (comparator != null) {
@@ -518,26 +531,7 @@ public class ProductServiceImpl implements ProductService {
         return response;
     }
 
-    @Override
-    public List<ProductResponse> getProductMultiple(List<ObjectId> idProduct) {
 
-        List<ProductResponse> productResponses = this.productRepository.findAll()
-                .stream()
-                .map(ProductMapper::mapProductResp)
-                .collect(Collectors.toList());
-
-        List<ProductResponse> resp = new ArrayList<>();
-
-        for (ProductResponse productResponse : productResponses) {
-            for (ObjectId id : idProduct) {
-                if (productResponse.getId().equals(id.toHexString())) {
-                    resp.add(productResponse);
-                }
-            }
-        }
-
-        return resp;
-    }
 
     public Product checkStateProduct(Product product)  {
         int count = 0;

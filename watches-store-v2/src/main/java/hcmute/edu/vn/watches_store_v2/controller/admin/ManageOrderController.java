@@ -123,6 +123,15 @@ public class ManageOrderController extends ControllerBase {
                 .doOnCancel(() -> log.info("Disconnection"));
     }
 
+    @GetMapping("/statistics-admin")
+    public ResponseEntity<?> getOrderStatistics() {
+        try {
+            return response(this.orderService.statisticAdmin(), HttpStatus.OK);
+        } catch (Exception e) {
+            return response(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     private String toJson(Object object) {
         ObjectMapper objectMapper = new ObjectMapper();
 

@@ -8,6 +8,7 @@ import hcmute.edu.vn.watches_store_v2.dto.order.request.OrderRequest;
 import hcmute.edu.vn.watches_store_v2.dto.order.response.OrderResponse;
 import hcmute.edu.vn.watches_store_v2.dto.order.response.OrderSuccessResponse;
 import hcmute.edu.vn.watches_store_v2.dto.order.response.Statistic;
+import hcmute.edu.vn.watches_store_v2.dto.order.response.StatisticAdmin;
 import hcmute.edu.vn.watches_store_v2.dto.orderLine.OrderLineDetail;
 import hcmute.edu.vn.watches_store_v2.dto.product.response.ProductResponse;
 import hcmute.edu.vn.watches_store_v2.dto.orderLine.response.OrderLineResponse;
@@ -18,8 +19,10 @@ import hcmute.edu.vn.watches_store_v2.entity.OrderLine;
 import hcmute.edu.vn.watches_store_v2.helper.payment_vnpay.PaymentService;
 import hcmute.edu.vn.watches_store_v2.mapper.OrderMapper;
 import hcmute.edu.vn.watches_store_v2.mapper.OrderLineMapper;
+import hcmute.edu.vn.watches_store_v2.mapper.ProductMapper;
 import hcmute.edu.vn.watches_store_v2.mapper.StatisticMapper;
 import hcmute.edu.vn.watches_store_v2.repository.OrderRepository;
+import hcmute.edu.vn.watches_store_v2.repository.ProductRepository;
 import hcmute.edu.vn.watches_store_v2.service.business.OrderService;
 import hcmute.edu.vn.watches_store_v2.service.component.*;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +31,7 @@ import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -44,6 +48,7 @@ public class OrderServiceImpl implements OrderService {
     private final CouponService couponService;
     private final MailService mailService;
     private final ProductService productService;
+    private final ProductRepository productRepository;
 
     @Override
     public List<OrderResponse> getAllUserOrders(ObjectId userId, String state) {
@@ -297,6 +302,71 @@ public class OrderServiceImpl implements OrderService {
             }
 
         }
+
+        return statistic;
+    }
+
+    @Override
+    public StatisticAdmin statisticAdmin() {
+
+        StatisticAdmin statistic = StatisticMapper.mapStatisticAmin();
+
+        List<ProductResponse> productResponses = this.productRepository.findAll()
+                .stream()
+                .map(p -> ProductMapper.mapProductResp(p))
+                .collect(Collectors.toList());
+
+        List<OrderResponse> orderResponses = this.orderRepository.findAll()
+                .stream()
+                .map(o -> OrderMapper.mapOrderResp(o))
+                .collect(Collectors.toList());
+
+        for (OrderResponse o : orderResponses) {
+
+            switch (o.getState()) {
+                case "processing":
+                    statistic.getStatus().increaseProcessing();
+                    break;
+
+                case "delivering":
+                    statistic.getStatus().increaseDelivery();
+                    break;
+
+                case "complete":
+                    statistic.getStatus().increaseComplete();
+                    break;
+
+                case "cancel":
+                    statistic.getStatus().increaseCancel();
+                    break;
+            }
+
+            for (StatisticAdmin.Price price : statistic.getPrices()) {
+                if (price.getMonth() == o.getCreatedAt().getMonth() + 1 && !o.getState().equals("cancel")) {
+                    price.setPrice(price.getPrice() + o.getTotalPrice());
+                }
+            }
+
+            for (OrderLineDetail p : o.getProducts()) {
+
+                for (StatisticAdmin.Gender gender : statistic.getGenders()) {
+                    if (gender.getMonth() == o.getCreatedAt().getMonth() + 1 && gender.getGender().equals(p.getProduct().getGenderUser())) {
+                        gender.setQuantity(gender.getQuantity() + 1);
+                    }
+                }
+
+                for (ProductResponse pr : productResponses) {
+                    if (pr.getId().equals(p.getProduct().getId())) {
+                        pr.increaseSelling();
+                    }
+                }
+            }
+        }
+
+        Comparator<ProductResponse> comparator = Comparator.comparingInt(ProductResponse::getSelling).reversed();
+        productResponses = productResponses.stream().sorted(comparator).collect(Collectors.toList());
+
+        statistic.setTop5Selling(productResponses.stream().limit(5).collect(Collectors.toList()));
 
         return statistic;
     }

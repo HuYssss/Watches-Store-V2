@@ -18,7 +18,6 @@ public interface ProductService {
     Product assignCategory(AssignCategoryRequest request);
     Product salingProduct(ObjectId productId);
     Product pauseOption(ObjectId productId, String key);
-    Product sellingOption(ObjectId productId, String key);
     PageResponse getAllProduct(String gender, String wireMaterial
             , String shape, String waterProof, String sortBy, String color
             , String q, String type
@@ -33,6 +32,4 @@ public interface ProductService {
     List<ProductResponse> updateDiscountAllProduct(ObjectId idCategory, double discount);
     ProductResponse updateDiscount(ObjectId idProduct, double discount, String key);
     ProductReviewResponse getProductReview(ObjectId idProduct);
-
-    List<ProductResponse> getProductMultiple(List<ObjectId> idProduct);
 }

@@ -53,9 +53,15 @@ public class ProductResponse {
 
     private String stateProduct;
 
+    private int selling = 0;
+
     private int access;
 
     public double getPriceSafely() {
         return this.option.getFirst().getValue().getPrice();
+    }
+
+    public void increaseSelling() {
+        selling += 1;
     }
 }
