@@ -1,6 +1,7 @@
 package hcmute.edu.vn.watches_store_v2.service.component;
 
 import hcmute.edu.vn.watches_store_v2.dto.category.request.AssignCategoryRequest;
+import hcmute.edu.vn.watches_store_v2.dto.orderLine.OrderLineDetail;
 import hcmute.edu.vn.watches_store_v2.dto.product.response.PageResponse;
 import hcmute.edu.vn.watches_store_v2.dto.product.response.ProductResponse;
 import hcmute.edu.vn.watches_store_v2.dto.product.response.ProductReviewResponse;
@@ -27,6 +28,8 @@ public interface ProductService {
             , String shape, String waterProof, String sortBy, String color
             , String q, String type, String state
             , double minPrice, double maxPrice, int pageNum);
+
+    List<Product> updateProductQuantity(List<OrderLineDetail> lineDetailList);
 
     List<ProductResponse> getProductsByCategory(ObjectId idCategory);
     List<ProductResponse> updateDiscountAllProduct(ObjectId idCategory, double discount);

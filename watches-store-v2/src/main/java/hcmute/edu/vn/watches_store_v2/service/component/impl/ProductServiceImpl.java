@@ -447,6 +447,54 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<Product> updateProductQuantity(List<OrderLineDetail> lineDetailList) {
+
+        List<Product> products = this.productRepository.findAll();
+
+        for (OrderLineDetail orderLineDetail : lineDetailList) {
+            for (Product product : products) {
+                if (orderLineDetail.getProduct().getId().equals(product.getId().toHexString())) {
+                    for (Option option : product.getOption()) {
+                        if (option.getKey().equals(orderLineDetail.getProduct().getOption().getKey())) {
+                            option.getValue().setQuantity(option.getValue().getQuantity() - orderLineDetail.getQuantity());
+                            if (option.getValue().getQuantity() == 0) {
+                                option.getValue().setState("outOfStock");
+                            }
+                        }
+                    }
+
+                    int countSelling = 0;
+                    int countPause = 0;
+                    int countOutOfStock = 0;
+
+                    for (Option option : product.getOption()) {
+                        if (option.getValue().getState().equals("pause")) {
+                            countPause++;
+                        } else if (option.getValue().getState().equals("selling")) {
+                            countSelling++;
+                            break;
+                        } else if (option.getValue().getState().equals("outOfStock")) {
+                            countOutOfStock++;
+                        }
+                    }
+
+                    if (countSelling > 0) {
+                        product.setStateProduct("selling");
+                    } else if (countPause == product.getOption().size()) {
+                        product.setStateProduct("pause");
+                    } else if (countOutOfStock == product.getOption().size()) {
+                        product.setStateProduct("outOfStock");
+                    }
+                }
+            }
+        }
+
+        this.productRepository.saveAll(products);
+
+        return products;
+    }
+
+    @Override
     public List<ProductResponse> getProductsByCategory(ObjectId idCategory) {
         try {
             List<Product> products = this.productRepository.findByCategory(idCategory);

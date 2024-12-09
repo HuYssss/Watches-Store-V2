@@ -23,7 +23,8 @@ public class ManageUserController extends ControllerBase {
 
     @PreAuthorize("hasAuthority('SCOPE_ACCESS_FULL_SYSTEM')")
     @GetMapping("/get-all-user")
-    public ResponseEntity<?> getAllUser(@RequestParam(defaultValue = "none") String q) {
+    public ResponseEntity<?> getAllUser(@RequestParam(defaultValue = "none") String q,
+                                        @RequestParam(defaultValue = "none") String state) {
         List<ProfileResponse> users = userService.getAllUser();
 
         if (users != null) {
@@ -32,6 +33,7 @@ public class ManageUserController extends ControllerBase {
                                     || (u.getFullName() != null && u.getFullName().toLowerCase(new Locale("vi", "VN")).contains(q.toLowerCase(new Locale("vi", "VN"))))
                                     || (u.getPhone() != null && u.getPhone().contains(q))
                                     || u.getEmail().contains(q))
+                            .filter(u -> state.equals("none") || u.getState().equals(state))
                     , HttpStatus.OK);
         }
         else

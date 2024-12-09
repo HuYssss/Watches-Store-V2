@@ -33,7 +33,8 @@ public class StatisticMapper {
                 new StatisticAdmin.Status(),
                 mapListPriceAdmin(),
                 new ArrayList<>(),
-                mapListGenderAdmin()
+                mapListGenderAdmin(),
+                new ArrayList<>()
         );
     }
 

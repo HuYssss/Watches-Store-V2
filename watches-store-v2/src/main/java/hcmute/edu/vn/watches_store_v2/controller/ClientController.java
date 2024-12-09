@@ -126,4 +126,13 @@ public class ClientController extends ControllerBase {
             return response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping("get-full-product")
+    public ResponseEntity<?> getFullProduct() {
+        try {
+            return response(this.productService.getAllProductResp(), HttpStatus.OK);
+        } catch (MongoException e) {
+            return response(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

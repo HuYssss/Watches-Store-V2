@@ -10,6 +10,7 @@ import hcmute.edu.vn.watches_store_v2.dto.order.response.OrderSuccessResponse;
 import hcmute.edu.vn.watches_store_v2.dto.order.response.Statistic;
 import hcmute.edu.vn.watches_store_v2.dto.order.response.StatisticAdmin;
 import hcmute.edu.vn.watches_store_v2.dto.orderLine.OrderLineDetail;
+import hcmute.edu.vn.watches_store_v2.dto.product.Option;
 import hcmute.edu.vn.watches_store_v2.dto.product.response.ProductResponse;
 import hcmute.edu.vn.watches_store_v2.dto.orderLine.response.OrderLineResponse;
 import hcmute.edu.vn.watches_store_v2.dto.user.response.ProfileOrder;
@@ -31,10 +32,7 @@ import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -89,6 +87,8 @@ public class OrderServiceImpl implements OrderService {
                     .stream()
                     .map(i -> OrderLineMapper.mapOrderLineFromResp(i))
                     .collect(Collectors.toList());
+
+            this.productService.updateProductQuantity(order.getProducts());
 
             this.orderLineService.updateOrderItem(items);
 
@@ -164,6 +164,8 @@ public class OrderServiceImpl implements OrderService {
         order.setTotalPrice(totalPrice);
 
         log.info("[OrderService] :: TotalPrice: {}", order.getTotalPrice());
+
+        this.productService.updateProductQuantity(order.getProducts());
 
         this.orderRepository.save(order);
 
@@ -350,12 +352,20 @@ public class OrderServiceImpl implements OrderService {
             for (OrderLineDetail p : o.getProducts()) {
 
                 for (StatisticAdmin.Gender gender : statistic.getGenders()) {
-                    if (gender.getMonth() == o.getCreatedAt().getMonth() + 1 && gender.getGender().equals(p.getProduct().getGenderUser())) {
+                    if (gender.getMonth() == o.getCreatedAt().getMonth() + 1
+                            && gender.getGender().toLowerCase(new Locale("vi", "VN")).equals(p.getProduct().getGenderUser().toLowerCase(new Locale("vi", "VN")))) {
                         gender.setQuantity(gender.getQuantity() + 1);
                     }
                 }
 
                 for (ProductResponse pr : productResponses) {
+
+                    for (Option option : pr.getOption()) {
+                        if (option.getValue().getQuantity() == 0 && !statistic.getOutOfStock().contains(pr)) {
+                            statistic.setProductOutOfStock(pr);
+                        }
+                    }
+
                     if (pr.getId().equals(p.getProduct().getId())) {
                         pr.increaseSelling();
                     }

@@ -16,6 +16,11 @@ public class StatisticAdmin {
     private List<StatisticAdmin.Price> prices;
     private List<ProductResponse> top5Selling;
     private List<StatisticAdmin.Gender> genders;
+    private List<ProductResponse> outOfStock = new ArrayList<>();
+
+    public void setProductOutOfStock(ProductResponse productResponse) {
+        outOfStock.add(productResponse);
+    }
 
     @Data
     @AllArgsConstructor
