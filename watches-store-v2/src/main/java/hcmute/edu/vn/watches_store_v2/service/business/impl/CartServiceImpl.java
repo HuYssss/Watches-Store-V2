@@ -95,7 +95,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public List<OrderLine> updateCart(ObjectId userId, List<OrderLineUpdateRequest> updateRequests) {
+    public List<OrderLineResponse> updateCart(ObjectId userId, List<OrderLineUpdateRequest> updateRequests) {
         try {
             List<ObjectId> deleteItem = new ArrayList<>();
             List<OrderLine> userItem = this.orderLineService.findAllUserItem(userId);
@@ -122,7 +122,7 @@ public class CartServiceImpl implements CartService {
             this.orderLineService.updateAll(userItem);
             this.orderLineService.deleteAllById(deleteItem);
 
-            return userItem;
+            return this.orderLineService.findAllByItemId(userItem.stream().map(OrderLine::getId).collect(Collectors.toList()));
 
         } catch (MongoException e) {
             e.printStackTrace();

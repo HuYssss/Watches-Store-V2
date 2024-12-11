@@ -37,8 +37,6 @@ public class ManageServiceController extends ControllerBase {
 
             service.setState("proceed");
 
-
-
             this.serviceRepository.save(service);
 
             return response(service, HttpStatus.OK);

@@ -12,7 +12,7 @@ public interface CartService {
     List<OrderLineResponse> getCart(ObjectId userId);
     OrderLineResponse addProductToCart(ObjectId userId, OrderLineRequest orderLineRequest);
     OrderLine deleteProductFromCart(ObjectId userId, ObjectId itemId);
-    List<OrderLine> updateCart(ObjectId userId, List<OrderLineUpdateRequest> itemUpdates);
+    List<OrderLineResponse> updateCart(ObjectId userId, List<OrderLineUpdateRequest> itemUpdates);
     OrderLine deleteItemFromCart(ObjectId userId, ObjectId itemId);
     OrderLine deleteAllItemsFromCart(ObjectId userId);
 }
