@@ -23,14 +23,25 @@ public class PaymentController {
     @GetMapping("/payment-success")
     public void paymentSuccess(
             @RequestParam(value = "vnp_OrderInfo", defaultValue = "none") String vnp_OrderInfo,
+            @RequestParam(value = "orderInfo", defaultValue = "none") String orderInfo,
             HttpServletResponse response) throws IOException
     {
         log.info("[Payment Controller]: Payment success");
         log.info("[Payment Controller]: vnp_OrderInfo = {}", vnp_OrderInfo);
+        log.info("[Payment Controller]: orderInfo = {}", orderInfo);
 
-        ObjectId orderId = new ObjectId(vnp_OrderInfo);
+        ObjectId orderId = null;
+        if (!vnp_OrderInfo.equals("none")) {
+            orderId = new ObjectId(vnp_OrderInfo);
+        }
 
-        this.orderService.isPaid(orderId);
+        if (!orderInfo.equals("none")) {
+            orderId = new ObjectId(orderInfo);
+        }
+
+        if (orderId != null) {
+            this.orderService.isPaid(orderId);
+        }
         
         response.sendRedirect("http://localhost:5173");
     }

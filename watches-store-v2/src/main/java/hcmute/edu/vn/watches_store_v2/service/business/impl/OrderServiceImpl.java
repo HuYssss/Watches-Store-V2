@@ -17,7 +17,8 @@ import hcmute.edu.vn.watches_store_v2.dto.user.response.ProfileOrder;
 import hcmute.edu.vn.watches_store_v2.entity.Coupon;
 import hcmute.edu.vn.watches_store_v2.entity.Order;
 import hcmute.edu.vn.watches_store_v2.entity.OrderLine;
-import hcmute.edu.vn.watches_store_v2.helper.payment_vnpay.PaymentService;
+import hcmute.edu.vn.watches_store_v2.helper.momo_payment.MomoPaymentService;
+import hcmute.edu.vn.watches_store_v2.helper.payment_vnpay.VnPayPaymentService;
 import hcmute.edu.vn.watches_store_v2.mapper.OrderMapper;
 import hcmute.edu.vn.watches_store_v2.mapper.OrderLineMapper;
 import hcmute.edu.vn.watches_store_v2.mapper.ProductMapper;
@@ -33,7 +34,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 @Service
@@ -101,7 +101,11 @@ public class OrderServiceImpl implements OrderService {
 
             if (orderReq.getPaymentMethod().equals("vnpay"))
             {
-                return OrderMapper.mapOrderSuccessResp(order, PaymentService.createPayment(order), false);
+                return OrderMapper.mapOrderSuccessResp(order, VnPayPaymentService.createPayment(order), false);
+            }
+            if (orderReq.getPaymentMethod().equals("momo"))
+            {
+                return OrderMapper.mapOrderSuccessResp(order, MomoPaymentService.createPayment(order), false);
             }
 
             return OrderMapper.mapOrderSuccessResp(order, "http://localhost:5173", false);
@@ -181,7 +185,11 @@ public class OrderServiceImpl implements OrderService {
 
         if (buyNowRequest.getPaymentMethod().equals("vnpay"))
         {
-            return OrderMapper.mapOrderSuccessResp(order, PaymentService.createPayment(order), true);
+            return OrderMapper.mapOrderSuccessResp(order, VnPayPaymentService.createPayment(order), true);
+        }
+        if (buyNowRequest.getPaymentMethod().equals("momo"))
+        {
+            return OrderMapper.mapOrderSuccessResp(order, MomoPaymentService.createPayment(order), true);
         }
 
         return OrderMapper.mapOrderSuccessResp(order, "http://localhost:5173", true);

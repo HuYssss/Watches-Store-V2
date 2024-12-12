@@ -58,7 +58,7 @@ public class CartServiceImpl implements CartService {
 
             ProductResponse productResponse = this.productService.getProductById(orderLineRequest.getProduct());
 
-            if (item != null) {
+            if (item != null && item.getOption().equals(orderLineRequest.getOption())) {
                 item.setQuantity(item.getQuantity() + orderLineRequest.getQuantity());
                 this.orderLineService.saveOrderLine(item);
                 OrderLineResponse resp = OrderLineMapper.mapOrderLineResp(item);
