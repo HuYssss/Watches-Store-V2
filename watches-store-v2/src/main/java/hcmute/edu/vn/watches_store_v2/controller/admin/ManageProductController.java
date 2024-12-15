@@ -34,7 +34,7 @@ public class ManageProductController extends ControllerBase {
             @RequestParam(defaultValue = "none", required = false) String wireMaterial,
             @RequestParam(defaultValue = "none", required = false) String shape,
             @RequestParam(defaultValue = "none", required = false) String waterProof,
-            @RequestParam(defaultValue = "none", required = false) String sortBy,
+            @RequestParam(defaultValue = "topSelling", required = false) String sortBy,
             @RequestParam(defaultValue = "none", required = false) String color,
             @RequestParam(defaultValue = "none", required = false) String q,
             @RequestParam(defaultValue = "none", required = false) String type,

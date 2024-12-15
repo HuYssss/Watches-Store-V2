@@ -17,10 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -41,14 +38,16 @@ public class ManageOrderController extends ControllerBase {
             @RequestParam(defaultValue = "none") String state,
             @RequestParam(defaultValue = "none") String q) {
         List<OrderResponse> orderResponses = this.orderService.getAllOrders();
-        if (orderResponses != null) {
 
+        if (orderResponses != null) {
+            Collections.reverse(orderResponses);
             sentOrders.set(orderResponses);
 
             return response(orderResponses.stream()
                             .filter(o -> q.equals("none")
                                     || o.getUser().getName().toLowerCase(new Locale("vi", "VN")).contains(q.toLowerCase(new Locale("vi", "VN")))
                                     || o.getUser().getPhone().contains(q.trim())
+                                    || o.getUser().getEmail().contains(q.trim())
                                     || o.getId().equals(q))
                             .filter(o -> state.equals("none") || o.getState().equals(state))
                     , HttpStatus.OK);
